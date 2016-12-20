@@ -30,7 +30,7 @@ impl ParseData for LinkedList<Box<ParseData>> {
     }
 }
 
-fn parse(src : &str, mut level : i32) -> (LinkedList<Box<ParseData>>, usize) {
+fn parse(src : &str) -> (LinkedList<Box<ParseData>>, usize) {
     let mut res : LinkedList<Box<ParseData>> = LinkedList::new();
     let mut partial = String::new();
     let mut idx : usize = 0;
@@ -49,14 +49,13 @@ fn parse(src : &str, mut level : i32) -> (LinkedList<Box<ParseData>>, usize) {
                 res.push_back(Box::new(partial));
                 partial = String::new();
             }
-            let (first, last) = src.split_at(i + 1);
-            let (a, b) = parse(last, level + 1);
+            let (_, last) = src.split_at(i + 1);
+            let (a, b) = parse(last);
             idx = i + b + 1;
             res.push_back(Box::new(a));
         } else if c == ')' {
             if !partial.is_empty() {
                 res.push_back(Box::new(partial));
-                partial = String::new();
             }
             return (res, i + 1);
         } else {
@@ -73,8 +72,7 @@ fn parse(src : &str, mut level : i32) -> (LinkedList<Box<ParseData>>, usize) {
 
 fn main() {
     let program = "(begin (define r 10) (* pi (* r r)))";
-    let mut level : i32 = 0;
-    let (parsed, idx) = parse(program, level);
+    let (parsed, _) = parse(program);
     println!("{}", program);
     parsed.walk_tree(0);
 }
