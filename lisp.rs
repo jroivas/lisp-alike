@@ -1,6 +1,18 @@
 use std::iter;
 use std::collections::LinkedList;
 
+/*
+trait ParseData
+
+impl ParseData for i32 {
+    val : i32
+}
+
+impl ParseData for LinkedList<ParseData> {
+    val : i32
+}
+*/
+
 struct ParseData {
     value : String ,
     list : LinkedList<ParseData>,
