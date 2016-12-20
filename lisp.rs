@@ -1,25 +1,37 @@
 use std::iter;
 use std::collections::LinkedList;
 
-/*
-trait ParseData
-
-impl ParseData for i32 {
-    val : i32
+trait ParseData {
+    fn walk_tree(&self, level : usize);
+    fn leve_str(&self, level : usize) -> String {
+        let res : String = iter::repeat(" ").take(level).collect();
+        return res;
+    }
 }
 
-impl ParseData for LinkedList<ParseData> {
-    val : i32
-}
-*/
-
-struct ParseData {
-    value : String ,
-    list : LinkedList<ParseData>,
+impl ParseData for usize {
+    fn walk_tree(&self, level : usize) {
+        println!("{}{}", self.leve_str(level), self);
+    }
 }
 
-fn parse(src : &str, mut level : i32) -> (LinkedList<ParseData>, usize) {
-    let mut res : LinkedList<ParseData> = LinkedList::new();
+impl ParseData for String {
+    fn walk_tree(&self, level : usize) {
+        println!("{}{}", self.leve_str(level), self);
+    }
+}
+
+impl ParseData for LinkedList<Box<ParseData>> {
+    fn walk_tree(&self, level : usize) {
+        println!("{}--", self.leve_str(level));
+        for val in self {
+            val.walk_tree(level + 1);
+        }
+    }
+}
+
+fn parse(src : &str, mut level : i32) -> (LinkedList<Box<ParseData>>, usize) {
+    let mut res : LinkedList<Box<ParseData>> = LinkedList::new();
     let mut partial = String::new();
     let mut idx : usize = 0;
 
@@ -28,29 +40,22 @@ fn parse(src : &str, mut level : i32) -> (LinkedList<ParseData>, usize) {
         if c == ' ' {
             if !partial.is_empty() {
                 //println!("<  {}", partial);
-                let mut tmp = ParseData { list: LinkedList::new(), value: partial };
-                res.push_back(tmp);
+                res.push_back(Box::new(partial));
                 partial = String::new();
             }
         } else if c == '(' {
             if !partial.is_empty() {
                 //println!("<( {}", partial);
-                let mut tmp = ParseData { list: LinkedList::new(), value: partial };
-                res.push_back(tmp);
+                res.push_back(Box::new(partial));
                 partial = String::new();
             }
             let (first, last) = src.split_at(i + 1);
-            //println!("( {}", last);
             let (a, b) = parse(last, level + 1);
             idx = i + b + 1;
-            //println!("= {} {}", i, idx);
-            let mut tmp = ParseData { list: a, value: String::new() };
-            res.push_back(tmp);
+            res.push_back(Box::new(a));
         } else if c == ')' {
             if !partial.is_empty() {
-                //println!("<) {} {} {}", partial, i, idx);
-                let mut tmp = ParseData { list: LinkedList::new(), value: partial };
-                res.push_back(tmp);
+                res.push_back(Box::new(partial));
                 partial = String::new();
             }
             return (res, i + 1);
@@ -61,23 +66,9 @@ fn parse(src : &str, mut level : i32) -> (LinkedList<ParseData>, usize) {
     }
 
     if !partial.is_empty() {
-        //println!("<  {}", partial);
-        let mut tmp = ParseData { list: LinkedList::new(), value: partial };
-        res.push_back(tmp);
+        res.push_back(Box::new(partial));
     }
     return (res, idx);
-}
-
-fn dumpTree(data : LinkedList<ParseData>, level : usize) {
-    let levelStr : String = iter::repeat(" ").take(level).collect();
-    println!("{}--", levelStr);
-    for val in data {
-        if !val.value.is_empty() {
-            println!("{}{}", levelStr, val.value);
-        } else {
-            dumpTree(val.list, level + 1)
-        }
-    }
 }
 
 fn main() {
@@ -85,5 +76,5 @@ fn main() {
     let mut level : i32 = 0;
     let (parsed, idx) = parse(program, level);
     println!("{}", program);
-    dumpTree(parsed, 0);
+    parsed.walk_tree(0);
 }
