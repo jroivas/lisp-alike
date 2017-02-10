@@ -33,7 +33,17 @@ def parse(prg):
     while idx < dest:
         c = prg[idx]
         #print ( '+cc %s %s %s' % (c,res, idx))
-        if c == ' ':
+        if c == '"' or (partials and partials[0] == '"'):
+            if partials:
+                if partials[0] == '"':
+                    partials += c
+                if c == '"':
+                    res, partials = appendPartials(res, partials)
+                    partials = ''
+            else:
+                partials = '"'
+            idx += 1
+        elif c == ' ':
             res, partials = appendPartials(res, partials)
             idx += 1
         elif c == '(':
@@ -65,19 +75,21 @@ def evaluate(item, env, dp=0):
         expr = item[2:]
         env[var] = evaluate(expr, env)
         return None
+    elif item[0] == 'if':
+        test = item[1]
+        then = item[2]
+        elsed = item[3]
+        case = evaluate(test, env)
+        ret = None
+        if case:
+            ret = then
+        else:
+            ret = elsed
+        return evaluate(ret, env)
     elif type(item) == str:
+        if item[0] == '"':
+            return None
         return env[item]
-        #print ('%sItem : %s' % (dp*' ', tree.strip()))
-        #return
-        """
-    elif type(item) == list:
-        if len (item) == 1 and type(item[0]) == list:
-            item = evaluate(item[0], env)
-        #for i in item:
-        #    evaluate(i, env)
-        print (' ii' ,item)
-        return item
-        """
     else:
         res = evaluate(item[0], env)
         args = []
@@ -88,32 +100,17 @@ def evaluate(item, env, dp=0):
         p = res(*args)
         return p
 
-    #elif item[0] == 'if':
-    """
-        for i in item:
-            if type(i) == dict:
-                d = i.get('data', None)
-                v = i.get('value', None)
-                if d:
-                    evaluate(d, env, dp+1)
-                elif v:
-                    evaluate(v, env, dp+1)
-                else:
-                    raise ValueError('Invalid item: %s' % i)
-            else:
-                print ('%sINV : %s' % (dp*' ', i))
-    """
-
 if __name__ == '__main__':
     data = readfile(sys.argv[1])
-    print (data)
+    #print (data)
     re, pos = parse(data)
     print (re)
     env = {
         'begin': lambda x: x,
         'pi': math.pi,
+        'or': lambda x, y: x or y,
+        'equal?': lambda x, y: x == y,
         '+': lambda x, y: x + y,
-        '*': lambda x, y: x * y,
-        'stack': []
+        '*': lambda x, y: x * y
     }
     print (evaluate(re, env))
