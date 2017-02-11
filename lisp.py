@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import math
+import operator
 import sys
 
 def readfile(a):
@@ -63,17 +64,58 @@ def parse(prg):
     res, partials = appendPartials(res, partials)
     return res, idx
 
+class LambdaCall(object):
+    def __init__(self, body, params, env):
+        self.params = params
+        self.body = body
+        self.env = env
+
+    def __call__(self, *args):
+        return evaluate(self.body, Env(env, self.params, args))
+
+class Env(dict):
+    def __init__(self, parent=None, args=[], vals=()):
+        #print (' EEE %s pp %s' % (args, vals))
+        self.update(zip(args, vals))
+        self.parent = parent
+
+    def find(self, var):
+        if var in self:
+            return self[var]
+        elif self.parent:
+            return self.parent.find(var)
+        
+        return None
+
 def evaluate(item, env, dp=0):
-    if not item:
+    #print ('TTT %s == %s' % (type(item), item))
+    if item is None or item == '':
         return ''
     if type(item) == list and len(item) == 1:
         item = item[0]
     if type(item) == int or type(item) == float:
         return item
+        """
+    elif item[0] == 'defun':
+        parms = item[1]
+        body = item[2:]
+        return {'params': parms, 'body':body}
+        #return {'params': params, 'body':body}
+        #env[var] = evaluate(expr, env)
+        return None
+        """
     elif item[0] == 'define':
         var = item[1]
-        expr = item[2:]
-        env[var] = evaluate(expr, env)
+        if type(var) == list:
+            # Function def
+            name = var[0]
+            params = var[1:]
+            body = item[2:]
+            env[name] = LambdaCall(body, params, env)
+        else:
+            expr = item[2:]
+            env[var] = evaluate(expr, env)
+        #print ('DDD %s %s' % (var, expr))
         return None
     elif item[0] == 'if':
         test = item[1]
@@ -81,15 +123,18 @@ def evaluate(item, env, dp=0):
         elsed = item[3]
         case = evaluate(test, env)
         ret = None
+        #print (' CC %s == %s, %s' % (case, test, env.find('N')))
         if case:
+            #print (' TH %s' % then)
             ret = then
         else:
+            #print (' EL %s' % elsed)
             ret = elsed
         return evaluate(ret, env)
     elif type(item) == str:
         if item[0] == '"':
             return None
-        return env[item]
+        return env.find(item)
     else:
         res = evaluate(item[0], env)
         args = []
@@ -97,6 +142,10 @@ def evaluate(item, env, dp=0):
             er = evaluate(a, env)
             if er is not None:
                 args.append(er)
+        #print ('AAA %s' % args)
+        #print ('rrr %s' % res)
+        if res is None:
+            return args
         p = res(*args)
         return p
 
@@ -104,13 +153,18 @@ if __name__ == '__main__':
     data = readfile(sys.argv[1])
     #print (data)
     re, pos = parse(data)
-    print (re)
-    env = {
+    #print (re)
+    env = Env()
+    env.update(vars(math))
+    env.update({
         'begin': lambda x: x,
-        'pi': math.pi,
         'or': lambda x, y: x or y,
         'equal?': lambda x, y: x == y,
-        '+': lambda x, y: x + y,
-        '*': lambda x, y: x * y
-    }
+        '=': lambda x, y: x == y,
+        '+': operator.add,
+        '-': operator.sub,
+        '*': operator.mul,
+        '/': operator.truediv,
+        'none': None
+    })
     print (evaluate(re, env))
