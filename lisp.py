@@ -145,7 +145,9 @@ def evaluate(item, env, dp=0):
         #print ('AAA %s' % args)
         #print ('rrr %s' % res)
         if res is None:
-            return args
+            if args:
+                return args[0]
+            return None
         p = res(*args)
         return p
 
