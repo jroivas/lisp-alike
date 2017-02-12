@@ -159,7 +159,8 @@ def stackEval(val, env):
             print ('CC' , cdr)
             l = stackEval(cdr, env)
             r = stackEval(car, env)
-            #return r
+            return r
+            print ('LR' , l,r)
             if l is not None and r is not None:
                 return (l, r)
                 #return r
@@ -243,5 +244,5 @@ if __name__ == '__main__':
     env = Env()
     env.update(vars(math))
 
-    print (' Rp ', prg)
+    #print (' Rp ', prg)
     print (stackEval(prg, env))
