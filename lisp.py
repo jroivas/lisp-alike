@@ -274,6 +274,8 @@ def stackEval(val, env):
             return stackEval(car[0], env) or stackEval(car[1], env)
         elif cdr == 'equal?' or cdr == '=':
             return stackEval(car[0], env) == stackEval(car[1], env)
+        elif cdr == 'cos':
+            return math.cos(stackEval(car, env))
         elif cdr == 'if':
             test = car[0][0]
             then = car[0][1]
@@ -295,7 +297,10 @@ def stackEval(val, env):
             #    args = [args]
             return item(*args)
         else:
-            return stackEval(cdr, env)
+            #print ('APE', cdr)
+            #print ('APE', car)
+            l = stackEval(cdr, env)
+            r = stackEval(car, env)
             #return val
             #raise ValueError('Unexpected tuple: %s' % str(val))
         #print (stackEval(car, env))
