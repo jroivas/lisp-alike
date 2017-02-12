@@ -146,7 +146,8 @@ class LambdaCall(object):
         self.env = env
 
     def __call__(self, *args):
-        return evaluate(self.body, Env(env, self.params, args))
+        #return stackEval(self.body, Env(env, self.params, args))
+        return stackEval(self.body, Env(env, self.params, args))
 
 class Env(dict):
     def __init__(self, parent=None, args=[], vals=()):
@@ -159,7 +160,7 @@ class Env(dict):
             return self[var]
         elif self.parent:
             return self.parent.find(var)
-        
+
         return None
 
 def evaluate(item, env, dp=0):
@@ -226,22 +227,22 @@ def evaluate(item, env, dp=0):
         p = res(*args)
         return p
 
+def parseArgs(v, env):
+    res = []
+    e = stackEval(v, env)
+    res.append(e)
+    return res
+
 def stackEval(val, env):
-    print ('SE', val)
-    """
-    if type(cdr) == tuple:
-        print ('RR', cdr)
-    """
     if type(val) == tuple:
         cdr, car = val
-        print ('St', cdr, car)
         if type(cdr) == tuple:
             l = stackEval(cdr, env)
             r = stackEval(car, env)
             if l is not None and r is not None:
-                return (l, r) 
+                #return (l, r)
                 #return l
-                #raise ValueError('Unexpected')
+                raise ValueError('Unexpected: %s %s' % (l, r))
             elif r is not None:
                 return r
         elif cdr == 'begin':
@@ -250,24 +251,51 @@ def stackEval(val, env):
             if type(car) == tuple:
                 var = car[0]
                 if type(var) == tuple:
-                    var = var[0]
-                    args = var[1]
+                    name = var[0][0]
+                    args = var[0][1]
                     #print ('DDD', stackEval(var, env))
-                    print ('DDD', var, args)
+                    #body = stackEval(var[1], env)
+                    body = var[1]
+                    env[name] = LambdaCall(body, args, env)
                 else:
                     val = stackEval(car[1], env)
                     env[var] = val
-                #stackEval(car[1], env)
+                return stackEval(car[1], env)
             else:
                 raise ValueError('Unexpected define: %s' % val)
         elif cdr == '*':
-            l = stackEval(car[0], env)
-            r = stackEval(car[1], env)
-            #print ('MMM', l, r)
-            return l * r
+            return stackEval(car[0], env) * stackEval(car[1], env)
+        elif cdr == '+':
+            return stackEval(car[0], env) + stackEval(car[1], env)
+        elif cdr == '-':
+            return stackEval(car[0], env) - stackEval(car[1], env)
+        elif cdr == 'or':
+            return stackEval(car[0], env) or stackEval(car[1], env)
+        elif cdr == 'equal?' or cdr == '=':
+            return stackEval(car[0], env) == stackEval(car[1], env)
+        elif cdr == 'if':
+            test = car[0][0]
+            then = car[0][1]
+            elsed = car[1]
+            res = stackEval(test, env)
+            if res:
+                e = stackEval(then, env)
+            else:
+                e = stackEval(elsed, env)
+            return e
+        elif env.find(cdr):
+            item = env.find(cdr)
+            #print ('CALL %s' %  cdr)
+            #args = []
+            args = parseArgs(car, env)
+            #print ('CALL %s (%s)' %  (cdr, args))
+            #stackEval(car, env)
+            #if type(args) != tuple:
+            #    args = [args]
+            return item(*args)
         else:
-            return val
-            #raise ValueError('Unexpected tuple: %s' % str(val))
+            #return val
+            raise ValueError('Unexpected tuple: %s' % str(val))
         #print (stackEval(car, env))
     elif type(val) == int or type(val) == float:
         return val
@@ -279,6 +307,7 @@ def stackEval(val, env):
     else:
         raise ValueError('Unexpected entry: %s' % val)
 
+
 if __name__ == '__main__':
     data = readfile(sys.argv[1])
     #print (data)
@@ -287,6 +316,7 @@ if __name__ == '__main__':
     #print (re)
     env = Env()
     env.update(vars(math))
+    """
     env.update({
         'begin': lambda x: x,
         'or': lambda x, y: x or y,
@@ -298,6 +328,7 @@ if __name__ == '__main__':
         '/': operator.truediv,
         'none': None
     })
+    """
     #print (evaluate(re, env))
-    print (' Rp ', prg)
+    #print (' Rp ', prg)
     print (stackEval(prg, env))

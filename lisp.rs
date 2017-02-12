@@ -86,34 +86,34 @@ fn parse(src : &str) -> (Vec<Expr>, usize) {
 
     for (i, c) in src.chars().enumerate() {
         if i >= idx {
-        if c == ' ' {
-            if !partial.is_empty() {
-                //println!("<  {}", partial);
-                res.push(parse_item(partial));
-                partial = String::new();
+            if c == ' ' {
+                if !partial.is_empty() {
+                    //println!("<  {}", partial);
+                    res.push(parse_item(partial));
+                    partial = String::new();
+                }
+            } else if c == '(' {
+                if !partial.is_empty() {
+                    //println!("<( {}", partial);
+                    res.push(parse_item(partial));
+                    partial = String::new();
+                }
+                let (_, last) = src.split_at(i + 1);
+                let (mut a, b) = parse(last);
+                idx = i + b + 1;
+                let head : Expr = a.swap_remove(0);
+                let tail : Vec<_> = a.drain(1..).collect();
+                //let (head, tail) = a.split_at(1);
+                res.push(Expr::Cons(Box::new(head), Box::new(Expr::List(tail))));
+                //res.push(Box::new(a));
+            } else if c == ')' {
+                if !partial.is_empty() {
+                    res.push(parse_item(partial));
+                }
+                return (res, i + 1);
+            } else {
+                partial.push(c);
             }
-        } else if c == '(' {
-            if !partial.is_empty() {
-                //println!("<( {}", partial);
-                res.push(parse_item(partial));
-                partial = String::new();
-            }
-            let (_, last) = src.split_at(i + 1);
-            let (mut a, b) = parse(last);
-            idx = i + b + 1;
-            let head : Expr = a.swap_remove(0);
-            let tail : Vec<_> = a.drain(1..).collect();
-            //let (head, tail) = a.split_at(1);
-            res.push(Expr::Cons(Box::new(head), Box::new(Expr::List(tail))));
-            //res.push(Box::new(a));
-        } else if c == ')' {
-            if !partial.is_empty() {
-                res.push(parse_item(partial));
-            }
-            return (res, i + 1);
-        } else {
-            partial.push(c);
-        }
         }
     }
 
