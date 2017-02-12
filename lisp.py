@@ -233,6 +233,38 @@ def parseArgs(v, env):
     res.append(e)
     return res
 
+def mapOper(oper, var, env):
+    opermap = {
+        '+': lambda a, b: a+b,
+        '-': lambda a, b: a-b,
+        '*': lambda a, b: a*b,
+        '/': lambda a, b: a/b
+    }
+    if type(var) == tuple:
+        l = stackEval(var[0], env)
+        r = stackEval(var[1], env)
+    else:
+        l = stackEval(var, env)
+        r = 0
+    if type(l) == tuple:
+        l = opermap[oper](l[0], l[1])
+    if type(r) == tuple:
+        r = opermap[oper](r[0], r[1])
+    return opermap[oper](l, r)
+    """
+    print (var)
+    if type(var) == tuple:
+        r = stackEval(var[0], env)
+        l = stackEval(var[1], env)
+        #print (r,l)
+        return (r, l)
+    else:
+        print (var)
+        return stackEval(var, env)
+
+    #print (r, l)
+    """
+
 def stackEval(val, env):
     if type(val) == tuple:
         cdr, car = val
@@ -264,12 +296,9 @@ def stackEval(val, env):
                 return stackEval(car[1], env)
             else:
                 raise ValueError('Unexpected define: %s' % val)
-        elif cdr == '*':
-            return stackEval(car[0], env) * stackEval(car[1], env)
-        elif cdr == '+':
-            return stackEval(car[0], env) + stackEval(car[1], env)
-        elif cdr == '-':
-            return stackEval(car[0], env) - stackEval(car[1], env)
+        elif cdr in ['+', '-', '*', '/']:
+            #return stackEval(car[0], env) * stackEval(car[1], env)
+            return mapOper(cdr, car, env)
         elif cdr == 'or':
             return stackEval(car[0], env) or stackEval(car[1], env)
         elif cdr == 'equal?' or cdr == '=':
@@ -303,6 +332,7 @@ def stackEval(val, env):
             r = stackEval(car, env)
             #return val
             #raise ValueError('Unexpected tuple: %s' % str(val))
+            return (l, r)
         #print (stackEval(car, env))
     elif type(val) == int or type(val) == float:
         return val
@@ -313,7 +343,6 @@ def stackEval(val, env):
         return v
     else:
         raise ValueError('Unexpected entry: %s' % val)
-
 
 if __name__ == '__main__':
     data = readfile(sys.argv[1])
