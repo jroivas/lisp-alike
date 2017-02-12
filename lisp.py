@@ -239,9 +239,10 @@ def stackEval(val, env):
         if type(cdr) == tuple:
             l = stackEval(cdr, env)
             r = stackEval(car, env)
+            return r
             if l is not None and r is not None:
                 #return (l, r)
-                #return l
+                #return r
                 raise ValueError('Unexpected: %s %s' % (l, r))
             elif r is not None:
                 return r
@@ -294,8 +295,9 @@ def stackEval(val, env):
             #    args = [args]
             return item(*args)
         else:
+            return stackEval(cdr, env)
             #return val
-            raise ValueError('Unexpected tuple: %s' % str(val))
+            #raise ValueError('Unexpected tuple: %s' % str(val))
         #print (stackEval(car, env))
     elif type(val) == int or type(val) == float:
         return val
