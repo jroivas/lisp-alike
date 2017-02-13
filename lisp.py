@@ -92,8 +92,6 @@ def parsePair(prg, level=0):
 
 def parse(prg):
     """
-    >>> parse("(+ 1 2) (+ 2 3)")
-    (('+', (1, 2)), ('+', (2, 3)))
     >>> parse("")
     (None, None)
     >>> parse("()")
@@ -113,7 +111,7 @@ def parse(prg):
     >>> parse("(* 2 (+ (* 2 1.2) 3))")
     ('*', (2, ('+', (('*', (2, 1.2)), 3))))
     >>> parse("(+ 1 2) (+ 2 3)")
-    (('+', (1, 2)), ('+', (2, 3)))
+    [('+', (1, 2)), ('+', (2, 3))]
     """
     res = []
     dest = len(prg)
@@ -124,7 +122,7 @@ def parse(prg):
         res.append((cdr, car))
         idx += cc
     if len(res) > 1:
-        return tuple(res)
+        return res
     elif res:
         return res[0]
     return (None, None)
@@ -172,12 +170,13 @@ def mapOper(oper, var, env):
     else:
         l = stackEval(var, env)
         r = 0
-    if type(l) == tuple:
+    while type(l) == tuple:
         l = opermap[oper](l[0], l[1])
-    if type(r) == tuple:
+    while type(r) == tuple:
         r = opermap[oper](r[0], r[1])
-    res= opermap[oper](l, r)
-    print (oper, res)
+    #print ('POM', oper, l, r)
+    res = opermap[oper](l, r)
+    #print ('OM', oper, res)
     return res
     """
     print (var)
@@ -193,15 +192,73 @@ def mapOper(oper, var, env):
     #print (r, l)
     """
 
+def flatTuple(var, env):
+    """
+    >>> flatTuple((1,2), Env())
+    [1, 2]
+    >>> flatTuple(((1, 2), 3), Env())
+    [1, 2, 3]
+    >>> flatTuple((1, (2, 3)), Env())
+    [1, 2, 3]
+    >>> flatTuple((), Env())
+    []
+    >>> flatTuple((1, (2, 3), (4, (5,6))), Env())
+    [1, 2, 3, 4, 5, 6]
+    """
+    data = []
+    if type(var) == tuple:
+        for i in var:
+            l = stackEval(i, env)
+            data += flatTuple(l, env)
+    elif var:
+        data.append(var)
+
+    return data
+
+def mapFlatApply(oper, var, env):
+    """
+    >>> mapFlatApply('+', (1, 2), Env())
+    3
+    >>> mapFlatApply('*', (1, 2), Env())
+    2
+    >>> mapFlatApply('+', ((1, 2), 3), Env())
+    6
+    >>> mapFlatApply('*', ((1, 2), 3), Env())
+    6
+    >>> mapFlatApply('+', (1, (2, 3)), Env())
+    6
+    >>> mapFlatApply('+', (1, (2, 3), (4, (5,6))), Env())
+    21
+    >>> mapFlatApply('*', (1, (2, 3), (4, (5,6))), Env())
+    720
+    >>> mapFlatApply('*', (('+', (1, 1)), (2, 3)), Env())
+    12
+    """
+    data = flatTuple(var, env)
+    opermap = {
+        '+': lambda a, b: a+b,
+        '-': lambda a, b: a-b,
+        '*': lambda a, b: a*b,
+        '/': lambda a, b: a/b
+    }
+
+    op = opermap[oper]
+    ret = data[0]
+    rest = data[1:]
+    while rest:
+        ret = op(ret, rest[0])
+        rest = rest[1:]
+    return ret
+
 def stackEval(val, env):
     if type(val) == tuple:
         cdr, car = val
         if type(cdr) == tuple:
-            print ('CC' , cdr)
+            #print ('CC' , cdr)
             l = stackEval(cdr, env)
             r = stackEval(car, env)
-            return r
-            print ('LR' , l,r)
+            #return r
+            #print ('LR' , l,r)
             if l is not None and r is not None:
                 return (l, r)
                 #return r
@@ -228,7 +285,7 @@ def stackEval(val, env):
                 raise ValueError('Unexpected define: %s' % val)
         elif cdr in ['+', '-', '*', '/']:
             #return stackEval(car[0], env) * stackEval(car[1], env)
-            return mapOper(cdr, car, env)
+            return mapFlatApply(cdr, car, env)
         elif cdr == 'or':
             return stackEval(car[0], env) or stackEval(car[1], env)
         elif cdr == 'equal?' or cdr == '=':
@@ -271,6 +328,8 @@ def stackEval(val, env):
         if v is None:
             raise ValueError('Undefined variable: %s' % val)
         return v
+    elif type(val) == list:
+        return [stackEval(x, env) for x in val]
     else:
         raise ValueError('Unexpected entry: %s' % val)
 
