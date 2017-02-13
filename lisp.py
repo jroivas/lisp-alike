@@ -30,7 +30,7 @@ def parseAtom(val, cdr, car):
 
     return (val, cdr, car)
 
-def parsePair(prg):
+def parsePair(prg, level=0):
     res = []
     partials = ''
     idx = 0
@@ -62,7 +62,7 @@ def parsePair(prg):
             rest = prg[idx + 1:]
             #a, b = parsePair(rest)
             #idx += b + 1
-            a, b, c = parsePair(rest)
+            a, b, c = parsePair(rest, level + 1)
             idx += c + 1
             #print ('CCC' , a,b)
             if cdr is None:
@@ -71,9 +71,11 @@ def parsePair(prg):
             elif car is None:
                 car = (a, b)
             else:
-                cdr = (cdr, car)
-                car = (a, b)
-                #car = (car, (a, b))
+                #cdr = (cdr, car)
+                #car = (a, b)
+                car = (car, (a, b))
+            if level == 0:
+                return (cdr, car, idx)
             #print ('CCP %s, %s' % (cdr, car))
         elif c == ')':
             partials, cdr, car = parseAtom(partials, cdr, car)
@@ -87,6 +89,45 @@ def parsePair(prg):
     partials, cdr, car = parseAtom(partials, cdr, car)
     return (cdr, car, idx)
     #return res, idx
+
+def parse(prg):
+    """
+    >>> parse("(+ 1 2) (+ 2 3)")
+    (('+', (1, 2)), ('+', (2, 3)))
+    >>> parse("")
+    (None, None)
+    >>> parse("()")
+    (None, None)
+    >>> parse("(1)")
+    (1, None)
+    >>> parse("(1 2)")
+    (1, 2)
+    >>> parse("(1, 2)")
+    ('1,', 2)
+    >>> parse("(+ 1 2)")
+    ('+', (1, 2))
+    >>> parse("(+ 1 2 3)")
+    ('+', ((1, 2), 3))
+    >>> parse("(* 2 (+ 1 3))")
+    ('*', (2, ('+', (1, 3))))
+    >>> parse("(* 2 (+ (* 2 1.2) 3))")
+    ('*', (2, ('+', (('*', (2, 1.2)), 3))))
+    >>> parse("(+ 1 2) (+ 2 3)")
+    (('+', (1, 2)), ('+', (2, 3)))
+    """
+    res = []
+    dest = len(prg)
+    idx = 0
+    l = 0
+    while idx < dest and prg[idx:].strip():
+        cdr, car, cc = parsePair(prg[idx:])
+        res.append((cdr, car))
+        idx += cc
+    if len(res) > 1:
+        return tuple(res)
+    elif res:
+        return res[0]
+    return (None, None)
 
 class LambdaCall(object):
     def __init__(self, body, params, env):
@@ -237,8 +278,7 @@ if __name__ == '__main__':
     data = readfile(sys.argv[1])
     #print (data)
 
-    cdr, car, pos = parsePair(data)
-    prg = (cdr, car)
+    prg = parse(data)
     #print (cdr,car)
 
     env = Env()
