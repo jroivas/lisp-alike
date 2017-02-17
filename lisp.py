@@ -345,14 +345,39 @@ def initEnv():
     return env
 
 def tidyRes(res):
+    """
+    >>> tidyRes('')
+    ''
+    >>> tidyRes(())
+    >>> tidyRes((None, None))
+    >>> tidyRes(None)
+    >>> tidyRes((1, 2))
+    (1, 2)
+    >>> tidyRes(1)
+    1
+    >>> tidyRes((1,))
+    1
+    >>> tidyRes((1, None))
+    1
+    >>> tidyRes((None, 1))
+    1
+    """
     if res is None:
         return None
     if type(res) == tuple:
         if len(res) == 0:
             return None
-        if res[0] is None:
+        elif res[0] is None:
             res = res[1:]
-        res = tidyRes(res)
+            res = tidyRes(res)
+        elif len(res) == 1:
+            return res[0]
+        else:
+            res = tuple([x for x in res if x is not None])
+            if len(res) == 0:
+                return None
+            elif len(res) == 1:
+                return res[0]
     return res
 
 def repl():
@@ -374,14 +399,11 @@ def repl():
 
 def runFile(name):
     data = readfile(name)
-    #print (data)
 
     prg = parse(data)
-    #print (cdr,car)
 
     env = initEnv()
 
-    #print (' Rp ', prg)
     print (stackEval(prg, env))
 
 if __name__ == '__main__':
