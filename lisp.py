@@ -3,6 +3,7 @@ import math
 import operator
 import sys
 import traceback
+import types
 
 def readfile(a):
     with open(a, 'r') as f:
@@ -136,7 +137,7 @@ class LambdaCall(object):
 
     def __call__(self, *args):
         #return stackEval(self.body, Env(env, self.params, args))
-        return stackEval(self.body, Env(env, self.params, args))
+        return stackEval(self.body, Env(self.env, self.params, args))
 
 class Env(dict):
     def __init__(self, parent=None, args=[], vals=()):
@@ -259,13 +260,18 @@ def stackEval(val, env):
     if val is None:
         return None
     if type(val) == tuple:
-        cdr, car = val
+        if len(val) == 0:
+            return None
+        elif len(val) == 1:
+            cdr = val[0]
+            car = None
+        else:
+            cdr, car = val
         if type(cdr) == tuple:
             #print ('CC' , cdr)
             l = stackEval(cdr, env)
             r = stackEval(car, env)
             #return r
-            #print ('LR' , l,r)
             if l is not None and r is not None:
                 return (l, r)
                 #return r
@@ -282,13 +288,15 @@ def stackEval(val, env):
                     args = var[0][1]
                     #print ('DDD', stackEval(var, env))
                     #body = stackEval(var[1], env)
-                    body = var[1]
-                    print ('AAA', name, args, body)
+                    body = (var[1:], car[1])
+                    print ('AAA', name)
+                    print ('bAA', args)
+                    print ('cAA', body)
                     env[name] = LambdaCall(body, args, env)
                 else:
                     val = stackEval(car[1], env)
                     env[var] = val
-                return stackEval(car[1], env)
+                #return val
             else:
                 raise ValueError('Unexpected define: %s' % val)
         elif cdr in ['+', '-', '*', '/']:
@@ -319,7 +327,11 @@ def stackEval(val, env):
             #stackEval(car, env)
             #if type(args) != tuple:
             #    args = [args]
-            return item(*args)
+            if type(item) == types.FunctionType or type(item) == types.LambdaType or isinstance(item, LambdaCall):
+                return item(*args)
+            else:
+                print (args, car)
+                return item
         else:
             #print ('APE', cdr)
             #print ('APE', car)
@@ -332,6 +344,8 @@ def stackEval(val, env):
     elif type(val) == int or type(val) == float:
         return val
     elif type(val) == str:
+        if val[0] == '"' or val[0] == '\'':
+            return val
         v = env.find(val)
         if v is None:
             raise ValueError('Undefined variable: %s' % val)
@@ -361,12 +375,22 @@ def tidyRes(res):
     1
     >>> tidyRes((1, None))
     1
+    >>> tidyRes((1, None, 2))
+    (1, 2)
     >>> tidyRes((None, 1))
     1
+    >>> tidyRes([1, 2])
+    [1, 2]
+    >>> tidyRes([None, 2])
+    2
+    >>> tidyRes([None, 1, 2])
+    [1, 2]
+    >>> tidyRes([None, 1, None, (3, None, 5), 2])
+    [1, (3, 5), 2]
     """
     if res is None:
         return None
-    if type(res) == tuple:
+    if type(res) == tuple or type(res) == list:
         if len(res) == 0:
             return None
         elif res[0] is None:
@@ -375,7 +399,10 @@ def tidyRes(res):
         elif len(res) == 1:
             return res[0]
         else:
-            res = tuple([x for x in res if x is not None])
+            if type(res) == tuple:
+                res = tuple([tidyRes(x) for x in res if x is not None])
+            else:
+                res = [tidyRes(x) for x in res if x is not None]
             if len(res) == 0:
                 return None
             elif len(res) == 1:
@@ -403,11 +430,11 @@ def runFile(name):
     data = readfile(name)
 
     prg = parse(data)
-    #print (prg)
+    print (prg)
 
     env = initEnv()
 
-    print (stackEval(prg, env))
+    print (tidyRes(stackEval(prg, env)))
 
 def runFiles(files):
     for fname in files:
