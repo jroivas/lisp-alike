@@ -284,14 +284,10 @@ def stackEval(val, env):
             if type(car) == tuple:
                 var = car[0]
                 if type(var) == tuple:
+                    # FIXME: Broken big time
                     name = var[0][0]
                     args = var[0][1]
-                    #print ('DDD', stackEval(var, env))
-                    #body = stackEval(var[1], env)
                     body = (var[1:], car[1])
-                    print ('AAA', name)
-                    print ('bAA', args)
-                    print ('cAA', body)
                     env[name] = LambdaCall(body, args, env)
                 else:
                     val = stackEval(car[1], env)
@@ -430,7 +426,7 @@ def runFile(name):
     data = readfile(name)
 
     prg = parse(data)
-    print (prg)
+    #print (prg)
 
     env = initEnv()
 
