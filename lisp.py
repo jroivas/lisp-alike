@@ -2,6 +2,7 @@
 import math
 import operator
 import sys
+import traceback
 
 def readfile(a):
     with open(a, 'r') as f:
@@ -282,6 +283,7 @@ def stackEval(val, env):
                     #print ('DDD', stackEval(var, env))
                     #body = stackEval(var[1], env)
                     body = var[1]
+                    print ('AAA', name, args, body)
                     env[name] = LambdaCall(body, args, env)
                 else:
                     val = stackEval(car[1], env)
@@ -401,14 +403,22 @@ def runFile(name):
     data = readfile(name)
 
     prg = parse(data)
+    #print (prg)
 
     env = initEnv()
 
     print (stackEval(prg, env))
 
+def runFiles(files):
+    for fname in files:
+        try:
+            runFile(fname)
+        except Exception as e:
+            print ('ERROR: %s' % e)
+            traceback.print_exc()
+
 if __name__ == '__main__':
     if len(sys.argv) > 1:
-        for x in sys.argv[1:]:
-            runFile(x)
+        runFiles(sys.argv[1:])
     else:
         repl()
