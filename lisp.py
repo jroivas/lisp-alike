@@ -194,7 +194,7 @@ def mapOper(oper, var, env):
 
 def flatTuple(var, env):
     """
-    >>> flatTuple((1,2), Env())
+    >>> flatTuple((1, 2), Env())
     [1, 2]
     >>> flatTuple(((1, 2), 3), Env())
     [1, 2, 3]
@@ -204,13 +204,15 @@ def flatTuple(var, env):
     []
     >>> flatTuple((1, (2, 3), (4, (5,6))), Env())
     [1, 2, 3, 4, 5, 6]
+    >>> flatTuple((0, 0), Env())
+    [0, 0]
     """
     data = []
     if type(var) == tuple:
         for i in var:
             l = stackEval(i, env)
             data += flatTuple(l, env)
-    elif var:
+    elif var is not None:
         data.append(var)
 
     return data
@@ -243,6 +245,8 @@ def mapFlatApply(oper, var, env):
     }
 
     op = opermap[oper]
+    if not data:
+        raise ValueError('Not enough data provided for \'%s\' %s' % (oper, var))
     ret = data[0]
     rest = data[1:]
     while rest:
@@ -251,6 +255,8 @@ def mapFlatApply(oper, var, env):
     return ret
 
 def stackEval(val, env):
+    if val is None:
+        return None
     if type(val) == tuple:
         cdr, car = val
         if type(cdr) == tuple:
@@ -333,15 +339,54 @@ def stackEval(val, env):
     else:
         raise ValueError('Unexpected entry: %s' % val)
 
-if __name__ == '__main__':
-    data = readfile(sys.argv[1])
+def initEnv():
+    env = Env()
+    env.update(vars(math))
+    return env
+
+def tidyRes(res):
+    if res is None:
+        return None
+    if type(res) == tuple:
+        if len(res) == 0:
+            return None
+        if res[0] is None:
+            res = res[1:]
+        res = tidyRes(res)
+    return res
+
+def repl():
+    env = initEnv()
+    while True:
+        sys.stdout.write('> ')
+        sys.stdout.flush()
+        data = sys.stdin.readline()
+        if data.strip() == 'exit':
+            break
+        try:
+            prg = parse(data)
+            res = stackEval(prg, env)
+            res = tidyRes(res)
+            if res is not None:
+                print (res)
+        except Exception as e:
+            print ('ERROR: %s' % e)
+
+def runFile(name):
+    data = readfile(name)
     #print (data)
 
     prg = parse(data)
     #print (cdr,car)
 
-    env = Env()
-    env.update(vars(math))
+    env = initEnv()
 
     #print (' Rp ', prg)
     print (stackEval(prg, env))
+
+if __name__ == '__main__':
+    if len(sys.argv) > 1:
+        for x in sys.argv[1:]:
+            runFile(x)
+    else:
+        repl()
