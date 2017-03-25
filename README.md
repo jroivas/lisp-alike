@@ -1,2 +1,10 @@
 # lisp-alike
-Lisp alike interpreter
+
+Lisp alike interpreter.
+
+Uses schema like dialect.
+
+
+## License
+
+MIT
