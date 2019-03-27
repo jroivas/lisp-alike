@@ -3,6 +3,7 @@
 #include <sstream>
 
 #include "history.hh"
+#include "tokenize.hh"
 
 int repl()
 {
@@ -15,6 +16,10 @@ int repl()
 
         std::cout << "LL: " << line << " " << line.size()
             << " " << history.size() << "\n";
+        Tokenize tok(line);
+        while (!tok.eof()) {
+            std::cout << "Token: " << tok.next() << "\n";
+        }
     }
     return 0;
 }
