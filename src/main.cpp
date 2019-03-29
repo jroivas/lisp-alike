@@ -14,8 +14,10 @@ int repl()
         std::getline(std::cin, line);
         history.add(line);
 
+#ifdef DEBUG
         std::cout << "LL: " << line << " " << line.size()
             << " " << history.size() << "\n";
+#endif
         Tokenize tok(line);
         while (!tok.eof()) {
             std::cout << "Token: " << tok.next() << "\n";

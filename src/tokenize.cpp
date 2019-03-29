@@ -46,8 +46,6 @@ bool Tokenize::matchRegex(const std::regex &regex)
     auto flags = std::regex_constants::match_continuous;
     std::string::const_iterator end = line.cend();
     if (!std::regex_search(iter, end, match, regex, flags))
-    //if (!std::regex_search(iter, end, match, regex))
-    //if (!std::regex_search(line, match, regex))
          return false;
 
     token = match.str(0);
