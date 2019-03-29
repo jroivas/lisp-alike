@@ -1,6 +1,7 @@
 #include "tokenize.hh"
 #include <iostream>
 
+static const std::regex whitespaceRegex("[\\s,]+|;.*");
 static const std::regex tokenRegexes[] = {
     std::regex("~@"),
     std::regex("[\\[\\]{}()'`~^@]"),
@@ -33,10 +34,8 @@ bool Tokenize::eof() const
 
 void Tokenize::ignoreWhiteSpace()
 {
-    while (!eof() && (
-            *iter == ' ' ||
-            *iter == '\t'))
-        ++iter;
+    while (!eof() && matchRegex(whitespaceRegex))
+        iter += token.size();
 }
 
 bool Tokenize::matchRegex(const std::regex &regex)
