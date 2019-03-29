@@ -1,5 +1,12 @@
+catch_header = custom_target('catch-header',
+    output: 'catch.hpp',
+    command: [
+        meson.current_source_dir() + '/update_catch.sh'
+    ])
+
 test_lips = executable('test-lips',
     sources: [
+        catch_header,
         'test.cpp',
         'test_tokenize.cpp'
     ],
