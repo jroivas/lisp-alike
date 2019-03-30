@@ -33,14 +33,12 @@ Value *Parse::readList(std::string endMark)
     Value *first = nullptr;
     Value *current = nullptr;
     while (!tokenize.eof() && tokenize.peek() != endMark) {
-        tokenize.next();
         Value *v = readForm();
-        if (v == nullptr) {
-            break;
-        }
-        if (first == nullptr) {
-            first = v;
-        } else current->addLast(v);
+        if (v == nullptr) break;
+
+        if (first == nullptr) first = v;
+        else current->addLast(v);
+
         current = v;
     }
     tokenize.next();

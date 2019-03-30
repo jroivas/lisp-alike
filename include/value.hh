@@ -9,7 +9,7 @@ enum class Type {
 class Value
 {
 public:
-    Value() : valueType(Type::None) {}
+    Value() : valueType(Type::None), next(nullptr) {}
     Type type() const {
         return valueType;
     }
@@ -20,15 +20,13 @@ public:
         return next;
     }
     void addLast(Value *v) {
-        Value *p = v;
-        while (p->next != nullptr) {
-            p = p->next;
-        }
+        Value *p = this;
+        while (p->next != nullptr) p = p->next;
         p->next = v;
     }
 
 protected:
-    Value(Type t) : valueType(t) {}
+    Value(Type t) : valueType(t), next(nullptr) {}
 
 private:
     Type valueType;

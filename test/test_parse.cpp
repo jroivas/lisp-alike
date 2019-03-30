@@ -40,4 +40,8 @@ TEST_CASE("Parse item list", "[parse]") {
     Parse p(t);
     Value *v = p.readForm();
     REQUIRE(v != nullptr);
+    REQUIRE(toInt(v)->value() == 1);
+    v = v->cdr();
+    REQUIRE(v != nullptr);
+    REQUIRE(toInt(v)->value() == 2);
 }
