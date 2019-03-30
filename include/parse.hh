@@ -8,6 +8,7 @@ class Parse
 public:
     Parse(Tokenize &t) : tokenize(t) {}
     Value *readForm();
+    Value *readAtom();
     Value *readList(std::string endMark);
 
 private:

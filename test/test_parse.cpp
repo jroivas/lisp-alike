@@ -9,10 +9,18 @@ TEST_CASE("Parse empty", "[parse]") {
     REQUIRE(p.readForm() == nullptr);
 }
 
+TEST_CASE("Parse string", "[parse]") {
+    Tokenize t("\"ab\"");
+    Parse p(t);
+    Value *v = p.readForm();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::String);
+    REQUIRE(toString(v)->value() == "ab");
+}
+
 TEST_CASE("Parse empty list", "[parse]") {
     Tokenize t("()");
     Parse p(t);
     Value *v = p.readForm();
     REQUIRE(v != nullptr);
-    REQUIRE(v->type() == Value::Type::List);
 }
