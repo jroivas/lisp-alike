@@ -31,5 +31,13 @@ TEST_CASE("Parse empty list", "[parse]") {
     Tokenize t("()");
     Parse p(t);
     Value *v = p.readForm();
+    // FIXME empty list should be something else
+    REQUIRE(v == nullptr);
+}
+
+TEST_CASE("Parse item list", "[parse]") {
+    Tokenize t("(1 2)");
+    Parse p(t);
+    Value *v = p.readForm();
     REQUIRE(v != nullptr);
 }
