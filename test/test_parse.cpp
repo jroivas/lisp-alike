@@ -45,3 +45,11 @@ TEST_CASE("Parse item list", "[parse]") {
     REQUIRE(v != nullptr);
     REQUIRE(toInt(v)->value() == 2);
 }
+
+TEST_CASE("Parse list with symbold", "[parse]") {
+    Tokenize t("(+ 1 2)");
+    Parse p(t);
+    Value *v = p.readForm();
+    REQUIRE(v != nullptr);
+    REQUIRE(toInt(v)->value() != 1);
+}
