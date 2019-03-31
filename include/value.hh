@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 enum class Type {
     None,
     String,
@@ -47,20 +49,8 @@ private:
     Value *next;
 };
 
-std::string boolToString(bool v) {
-    return v ? "true" : "false";
-}
-std::string listToString(Value *v) {
-    std::string res = "(";
-    while (v != nullptr) {
-        if (!res.empty() && res[res.length() - 1] != '(')
-            res += " ";
-        res += v->toString();
-        v = v->cdr();
-    }
-    res += ")";
-    return res;
-}
+std::string boolToString(bool v);
+std::string listToString(Value *v);
 
 #define ValueDef(x, y, t, s)\
 class x ## Value : public Value\
@@ -74,7 +64,7 @@ public:\
 private:\
     t _value;\
 };\
-x ## Value* to##x(Value *val) {\
+static inline x ## Value* to##x(Value *val) {\
     if (val->type() != y) throw "Type mismatch!";\
     return static_cast<x ## Value*>(val); \
 }
@@ -92,7 +82,7 @@ public:
     Value *value() { return nullptr; }
     std::string toString() const { return "nil"; }
 };
-NilValue *toNil(Value *val) {
+static inline NilValue *toNil(Value *val) {
     if (val->type() != Type::Nil) throw "Type mismatch!";
     return static_cast<NilValue*>(val);
 }

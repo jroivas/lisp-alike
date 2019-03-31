@@ -2,6 +2,7 @@ lipslib = library('lipsl',
     sources: [
         'history.cpp',
         'tokenize.cpp',
+        'value.cpp',
         'parse.cpp'
     ],
     include_directories: [
