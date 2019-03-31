@@ -1,4 +1,9 @@
 #include "eval.hh"
+#include "builtin.hh"
+
+Eval::Eval(Parse &p, Symbols &s) : parse(p), symbols(s)
+{
+}
 
 Value *Eval::eval()
 {
@@ -14,7 +19,10 @@ Value *Eval::eval()
 Value *Eval::evalSymbol(SymbolValue *symbol)
 {
     std::string val = symbol->value();
-    return nullptr;
+    auto h = symbols.get(val);
+    if (h == nullptr) return nullptr;
+
+    return h(symbol->cdr());
 }
 
 Value *Eval::evalList(ListValue *list)

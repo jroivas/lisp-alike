@@ -10,6 +10,7 @@ test_lips = executable('test-lips',
         'test.cpp',
         'test_tokenize.cpp',
         'test_symbols.cpp',
+        'test_builtin.cpp',
         'test_value.cpp',
         'test_parse.cpp',
         'test_eval.cpp'

@@ -1,12 +1,13 @@
 #pragma once
 
-#include "parse.hh"
 #include "value.hh"
+#include "parse.hh"
+#include "symbols.hh"
 
 class Eval
 {
 public:
-    Eval(Parse &p) : parse(p) {}
+    Eval(Parse &p, Symbols &s);
     Value *eval();
 
 private:
@@ -14,4 +15,5 @@ private:
     Value *evalSymbol(SymbolValue *symbol);
 
     Parse &parse;
+    Symbols &symbols;
 };

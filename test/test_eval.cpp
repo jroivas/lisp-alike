@@ -3,11 +3,13 @@
 #include "parse.hh"
 #include "value.hh"
 #include "eval.hh"
+#include "builtin.hh"
 
 TEST_CASE("Eval empty", "[eval]") {
     Tokenize t("");
     Parse p(t);
-    Eval e(p);
+    Symbols s;
+    Eval e(p, s);
 
     Value *v = e.eval();
     REQUIRE(v == nullptr);
@@ -16,7 +18,8 @@ TEST_CASE("Eval empty", "[eval]") {
 TEST_CASE("Eval number", "[eval]") {
     Tokenize t("42");
     Parse p(t);
-    Eval e(p);
+    Symbols s;
+    Eval e(p, s);
 
     Value *v = e.eval();
     REQUIRE(v != nullptr);
@@ -27,7 +30,8 @@ TEST_CASE("Eval number", "[eval]") {
 TEST_CASE("Eval string", "[eval]") {
     Tokenize t("\"42\"");
     Parse p(t);
-    Eval e(p);
+    Symbols s;
+    Eval e(p, s);
 
     Value *v = e.eval();
     REQUIRE(v != nullptr);
@@ -38,7 +42,9 @@ TEST_CASE("Eval string", "[eval]") {
 TEST_CASE("Eval plus", "[eval]") {
     Tokenize t("(+ 1 2)");
     Parse p(t);
-    Eval e(p);
+    Symbols s;
+    Builtin b(s);
+    Eval e(p, s);
 
     Value *v = e.eval();
     REQUIRE(v != nullptr);
