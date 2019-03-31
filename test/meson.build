@@ -9,6 +9,7 @@ test_lips = executable('test-lips',
         catch_header,
         'test.cpp',
         'test_tokenize.cpp',
+        'test_value.cpp',
         'test_parse.cpp'
     ],
     include_directories: [
