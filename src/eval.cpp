@@ -20,7 +20,9 @@ Value *Eval::evalSymbol(SymbolValue *symbol)
 {
     std::string val = symbol->value();
     auto h = symbols.get(val);
-    if (h == nullptr) return nullptr;
+    if (h == nullptr) {
+        return new StringValue("ERROR: Unknown symbol: " + val);
+    }
 
     return h(symbol->cdr());
 }

@@ -5,11 +5,16 @@
 #include "history.hh"
 #include "tokenize.hh"
 #include "parse.hh"
+#include "symbols.hh"
+#include "builtin.hh"
+#include "eval.hh"
 
 int repl()
 {
     History history;
     std::string line;
+    Symbols s;
+    Builtin b(s);
     while (!std::cin.eof()) {
         std::cout << "lips> ";
         std::getline(std::cin, line);
@@ -18,9 +23,10 @@ int repl()
         try {
             Tokenize tok(line);
             Parse p(tok);
-            Value *v = p.readForm();
-            if (v != nullptr)
-                std::cout << v->toString() << "\n";
+            Eval e(p, s);
+            Value *ev = e.eval();
+            if (ev != nullptr)
+                std::cout << ev->toString() << "\n";
         }
         catch (std::string s) {
             std::cerr << s << "\n";
