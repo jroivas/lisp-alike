@@ -13,4 +13,5 @@ public:
 private:
     Symbols &symbols;
     static Value *plus(Value *v);
+    static Value *minus(Value *v);
 };
