@@ -20,5 +20,19 @@ Value *Builtin::plus(Value *v)
             return new IntValue(a);
         v = v->cdr();
     }
+    double b = a;
+    while(true) {
+        if (v->type() == Type::Int) {
+            b += toInt(v)->value();
+        } else if (v->type() == Type::Float) {
+            b += toFloat(v)->value();
+        } else {
+            PARSE_ERROR("Can sum only int and float!");
+        }
+        if (v->cdr() == nullptr)
+            return new FloatValue(b);
+        v = v->cdr();
+    }
+
     return nullptr;
 }
