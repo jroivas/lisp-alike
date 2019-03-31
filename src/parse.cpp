@@ -18,6 +18,8 @@ Value *Parse::readForm()
 Value *Parse::readAtom()
 {
     std::string token = tokenize.next();
+    if (token.empty()) return nullptr;
+
     if (token.length() >= 2 && token[0] == '"' &&
             token[token.length() -1] == '"')
         return new StringValue(token.substr(1, token.length() - 2));
@@ -25,7 +27,7 @@ Value *Parse::readAtom()
     if (std::regex_match(token, intRegex))
         return new IntValue(atoll(token.c_str()));
 
-    return nullptr;
+    return new SymbolValue(token);
 }
 
 Value *Parse::readList(std::string endMark)

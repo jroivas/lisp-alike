@@ -3,7 +3,8 @@
 enum class Type {
     None,
     String,
-    Int
+    Int,
+    Symbol
 };
 
 class Value
@@ -46,4 +47,5 @@ private:\
 x ## Value* to##x(Value *val) { return (x ## Value*)val; }
 
 ValueDef(String, Type::String, std::string)
+ValueDef(Symbol, Type::Symbol, std::string)
 ValueDef(Int, Type::Int, long long int)

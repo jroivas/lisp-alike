@@ -6,7 +6,8 @@
 TEST_CASE("Parse empty", "[parse]") {
     Tokenize t("");
     Parse p(t);
-    REQUIRE(p.readForm() == nullptr);
+    Value *v = p.readForm();
+    REQUIRE(v == nullptr);
 }
 
 TEST_CASE("Parse string", "[parse]") {
@@ -46,10 +47,22 @@ TEST_CASE("Parse item list", "[parse]") {
     REQUIRE(toInt(v)->value() == 2);
 }
 
-TEST_CASE("Parse list with symbold", "[parse]") {
+TEST_CASE("Parse list with symbols", "[parse]") {
     Tokenize t("(+ 1 2)");
     Parse p(t);
     Value *v = p.readForm();
     REQUIRE(v != nullptr);
-    REQUIRE(toInt(v)->value() != 1);
+    REQUIRE(v->type() == Type::Symbol);
+    REQUIRE(toSymbol(v)->value() == "+");
+
+    v = v->cdr();
+    REQUIRE(v != nullptr);
+    REQUIRE(toInt(v)->value() == 1);
+
+    v = v->cdr();
+    REQUIRE(v != nullptr);
+    REQUIRE(toInt(v)->value() == 2);
+
+    v = v->cdr();
+    REQUIRE(v == nullptr);
 }
