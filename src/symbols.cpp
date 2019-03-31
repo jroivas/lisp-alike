@@ -4,10 +4,6 @@
 
 static std::unordered_map<std::string, Symbols::Handler *>__handlers;
 
-Symbols::Symbols()
-{
-}
-
 void Symbols::registerSymbol(std::string name, Handler h)
 {
     __handlers[name] = h;
@@ -15,5 +11,8 @@ void Symbols::registerSymbol(std::string name, Handler h)
 
 Symbols::Handler *Symbols::get(std::string name)
 {
-    return nullptr;
+    auto res = __handlers.find(name);
+    if (res == __handlers.end()) return nullptr;
+
+    return res->second;
 }
