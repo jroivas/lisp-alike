@@ -232,7 +232,7 @@ TEST_CASE("Parse more complex lists", "[parse]") {
     REQUIRE(v->cdr() == nullptr);
 }
 
-TEST_CASE("Handle errors", "[parse]") {
+TEST_CASE("Handle cast errors", "[parse]") {
     Tokenize t("42");
     Parse p(t);
 
@@ -242,4 +242,18 @@ TEST_CASE("Handle errors", "[parse]") {
 
     REQUIRE_THROWS(toString(v));
     REQUIRE_NOTHROW(toInt(v));
+}
+
+TEST_CASE("Handle unbalanced list error", "[parse]") {
+    Tokenize t("(");
+    Parse p(t);
+
+    REQUIRE_THROWS(p.readForm());
+}
+
+TEST_CASE("Handle unbalanced list error inside list", "[parse]") {
+    Tokenize t("(()");
+    Parse p(t);
+
+    REQUIRE_THROWS(p.readForm());
 }

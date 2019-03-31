@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "errors.hh"
 
 enum class Type {
     None,
@@ -65,7 +66,7 @@ private:\
     t _value;\
 };\
 static inline x ## Value* to##x(Value *val) {\
-    if (val->type() != y) throw "Type mismatch!";\
+    if (val->type() != y) ERROR("Type mismatch!");\
     return static_cast<x ## Value*>(val); \
 }
 
@@ -83,6 +84,6 @@ public:
     std::string toString() const { return "nil"; }
 };
 static inline NilValue *toNil(Value *val) {
-    if (val->type() != Type::Nil) throw "Type mismatch!";
+    if (val->type() != Type::Nil) ERROR("Type mismatch!");
     return static_cast<NilValue*>(val);
 }

@@ -15,11 +15,16 @@ int repl()
         std::getline(std::cin, line);
         history.add(line);
 
-        Tokenize tok(line);
-        Parse p(tok);
-        Value *v = p.readForm();
-        if (v != nullptr)
-            std::cout << v->toString() << "\n";
+        try {
+            Tokenize tok(line);
+            Parse p(tok);
+            Value *v = p.readForm();
+            if (v != nullptr)
+                std::cout << v->toString() << "\n";
+        }
+        catch (std::string s) {
+            std::cerr << s << "\n";
+        }
     }
     return 0;
 }

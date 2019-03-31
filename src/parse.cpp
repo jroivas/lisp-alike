@@ -78,7 +78,9 @@ Value *Parse::readList(std::string endMark)
 
         current = v;
     }
-    tokenize.next();
+    std::string end = tokenize.next();
+    if (end != endMark)
+        PARSE_ERROR("Missing: " + endMark)
 
     current = new ListValue(first);
     return current;

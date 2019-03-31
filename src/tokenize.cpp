@@ -58,7 +58,10 @@ void Tokenize::nextToken()
     iter += token.size();
 
     ignoreWhiteSpace();
-    if (eof()) return;
+    if (eof()) {
+        token = "";
+        return;
+    }
 
     for (auto &regex : tokenRegexes) {
         if (matchRegex(regex)) return;
