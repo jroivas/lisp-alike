@@ -28,6 +28,15 @@ TEST_CASE("Parse int", "[parse]") {
     REQUIRE(toInt(v)->value() == 42);
 }
 
+TEST_CASE("Parse float", "[parse]") {
+    Tokenize t("3.14159");
+    Parse p(t);
+    Value *v = p.readForm();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Float);
+    REQUIRE(toFloat(v)->value() == 3.14159);
+}
+
 TEST_CASE("Parse empty list", "[parse]") {
     Tokenize t("()");
     Parse p(t);

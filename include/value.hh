@@ -7,6 +7,7 @@ enum class Type {
     None,
     String,
     Int,
+    Float,
     Symbol,
     Nil,
     Bool,
@@ -74,6 +75,7 @@ ValueDef(String, Type::String, std::string, )
 ValueDef(Symbol, Type::Symbol, std::string, )
 ValueDef(Bool, Type::Bool, bool, boolToString)
 ValueDef(Int, Type::Int, long long int, std::to_string)
+ValueDef(Float, Type::Float, double, std::to_string)
 ValueDef(List, Type::List, Value *, listToString)
 
 class NilValue : public Value

@@ -4,6 +4,7 @@
 #include <regex>
 
 static const std::regex intRegex("^[-+]?\\d+$");
+static const std::regex floatRegex("^[-+]?\\d+\\.\\d*$");
 
 Value *Parse::readForm()
 {
@@ -53,6 +54,9 @@ Value *Parse::readAtom()
 
     if (std::regex_match(token, intRegex))
         return new IntValue(atoll(token.c_str()));
+
+    if (std::regex_match(token, floatRegex))
+        return new FloatValue(std::stod(token));
 
     Value *macro = readMacro(token);
     if (macro != nullptr)
