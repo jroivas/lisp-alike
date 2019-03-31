@@ -79,5 +79,8 @@ Value *Parse::readList(std::string endMark)
         current = v;
     }
     tokenize.next();
-    return first;
+
+    current = new ListValue(first);
+    current->setNext(first);
+    return current;
 }

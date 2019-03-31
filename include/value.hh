@@ -6,7 +6,8 @@ enum class Type {
     Int,
     Symbol,
     Nil,
-    Bool
+    Bool,
+    List
 };
 
 class Value
@@ -55,6 +56,7 @@ ValueDef(String, Type::String, std::string)
 ValueDef(Symbol, Type::Symbol, std::string)
 ValueDef(Bool, Type::Bool, bool)
 ValueDef(Int, Type::Int, long long int)
+ValueDef(List, Type::List, Value *)
 
 class NilValue : public Value
 {
