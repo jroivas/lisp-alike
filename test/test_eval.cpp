@@ -4,7 +4,7 @@
 #include "value.hh"
 #include "eval.hh"
 
-TEST_CASE("Eval empty", "[parse]") {
+TEST_CASE("Eval empty", "[eval]") {
     Tokenize t("");
     Parse p(t);
     Eval e(p);
@@ -13,7 +13,7 @@ TEST_CASE("Eval empty", "[parse]") {
     REQUIRE(v == nullptr);
 }
 
-TEST_CASE("Eval number", "[parse]") {
+TEST_CASE("Eval number", "[eval]") {
     Tokenize t("42");
     Parse p(t);
     Eval e(p);
@@ -24,7 +24,7 @@ TEST_CASE("Eval number", "[parse]") {
     REQUIRE(toInt(v)->value() == 42);
 }
 
-TEST_CASE("Eval string", "[parse]") {
+TEST_CASE("Eval string", "[eval]") {
     Tokenize t("\"42\"");
     Parse p(t);
     Eval e(p);
@@ -35,7 +35,7 @@ TEST_CASE("Eval string", "[parse]") {
     REQUIRE(toString(v)->value() == "42");
 }
 
-TEST_CASE("Eval plus", "[parse]") {
+TEST_CASE("Eval plus", "[eval]") {
     Tokenize t("(+ 1 2)");
     Parse p(t);
     Eval e(p);
