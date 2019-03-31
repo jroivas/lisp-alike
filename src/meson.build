@@ -3,7 +3,8 @@ lipslib = library('lipsl',
         'history.cpp',
         'tokenize.cpp',
         'value.cpp',
-        'parse.cpp'
+        'parse.cpp',
+        'eval.cpp'
     ],
     include_directories: [
         top_inc,
