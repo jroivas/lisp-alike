@@ -50,7 +50,10 @@ public:\
 private:\
     t _value;\
 };\
-x ## Value* to##x(Value *val) { return (x ## Value*)val; }
+x ## Value* to##x(Value *val) {\
+    if (val->type() != y) throw "Type mismatch!";\
+    return static_cast<x ## Value*>(val); \
+}
 
 ValueDef(String, Type::String, std::string)
 ValueDef(Symbol, Type::Symbol, std::string)
@@ -64,4 +67,7 @@ public:
     NilValue() : Value(Type::Nil) {}
     Value *value() { return nullptr; }
 };
-NilValue *toNil(Value *val) { return (NilValue*)val; }
+NilValue *toNil(Value *val) {
+    if (val->type() != Type::Nil) throw "Type mismatch!";
+    return static_cast<NilValue*>(val);
+}

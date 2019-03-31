@@ -60,6 +60,7 @@ TEST_CASE("Parse item list", "[parse]") {
     Value *v = p.readForm();
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::List);
+    REQUIRE(v->cdr() == nullptr);
 
     v = toList(v)->value();
     REQUIRE(v != nullptr);
@@ -68,26 +69,8 @@ TEST_CASE("Parse item list", "[parse]") {
     v = v->cdr();
     REQUIRE(v != nullptr);
     REQUIRE(toInt(v)->value() == 2);
+    REQUIRE(v->cdr() == nullptr);
 }
-
-#if 0
-TEST_CASE("Parse item list by cdr only", "[parse]") {
-    Tokenize t("(1 2)");
-    Parse p(t);
-
-    Value *v = p.readForm();
-    REQUIRE(v != nullptr);
-    REQUIRE(v->type() == Type::List);
-
-    v = v->cdr();
-    REQUIRE(v != nullptr);
-    REQUIRE(toInt(v)->value() == 1);
-
-    v = v->cdr();
-    REQUIRE(v != nullptr);
-    REQUIRE(toInt(v)->value() == 2);
-}
-#endif
 
 TEST_CASE("Parse list with symbols", "[parse]") {
     Tokenize t("(+ 1 2)");
@@ -247,4 +230,16 @@ TEST_CASE("Parse more complex lists", "[parse]") {
     REQUIRE(v->type() == Type::Symbol);
     REQUIRE(toSymbol(v)->value() == "e");
     REQUIRE(v->cdr() == nullptr);
+}
+
+TEST_CASE("Handle errors", "[parse]") {
+    Tokenize t("42");
+    Parse p(t);
+
+    Value *v = p.readForm();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+
+    REQUIRE_THROWS(toString(v));
+    REQUIRE_NOTHROW(toInt(v));
 }
