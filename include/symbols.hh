@@ -6,7 +6,7 @@
 class Symbols
 {
 public:
-    typedef Value *(Handler)(Value *v);
+    typedef Value *(Handler)(Value *a, Value *b);
 
     Symbols() {}
     void registerSymbol(std::string name, Handler h);

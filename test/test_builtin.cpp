@@ -18,7 +18,7 @@ TEST_CASE("Test plus", "[builtin]") {
     Value *v1 = new IntValue(3);
     Value *v2 = new IntValue(5);
     v1->addLast(v2);
-    Value *v = s.get("+")(v1);
+    Value *v = s.get("+")(v1, v2);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Int);
@@ -33,7 +33,7 @@ TEST_CASE("Test plus mixed int float", "[builtin]") {
     Value *v1 = new IntValue(3);
     Value *v2 = new FloatValue(5.14);
     v1->addLast(v2);
-    Value *v = s.get("+")(v1);
+    Value *v = s.get("+")(v1, v2);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Float);
@@ -48,7 +48,7 @@ TEST_CASE("Test plus float", "[builtin]") {
     Value *v1 = new FloatValue(1.2);
     Value *v2 = new FloatValue(4.7);
     v1->addLast(v2);
-    Value *v = s.get("+")(v1);
+    Value *v = s.get("+")(v1, v2);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Float);
@@ -63,7 +63,7 @@ TEST_CASE("Test plus faulty", "[builtin]") {
     Value *v1 = new IntValue(5);
     Value *v2 = new StringValue("tmp");
     v1->addLast(v2);
-    REQUIRE_THROWS(s.get("+")(v1));
+    REQUIRE_THROWS(s.get("+")(v1, v2));
 }
 
 TEST_CASE("Test minus", "[builtin]") {
@@ -74,7 +74,7 @@ TEST_CASE("Test minus", "[builtin]") {
     Value *v1 = new IntValue(3);
     Value *v2 = new IntValue(5);
     v1->addLast(v2);
-    Value *v = s.get("-")(v1);
+    Value *v = s.get("-")(v1, v2);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Int);
@@ -89,7 +89,7 @@ TEST_CASE("Test minus mixed int float", "[builtin]") {
     Value *v1 = new IntValue(10);
     Value *v2 = new FloatValue(5.14);
     v1->addLast(v2);
-    Value *v = s.get("-")(v1);
+    Value *v = s.get("-")(v1, v2);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Float);
@@ -104,7 +104,7 @@ TEST_CASE("Test minus float", "[builtin]") {
     Value *v1 = new FloatValue(4.2);
     Value *v2 = new FloatValue(1.7);
     v1->addLast(v2);
-    Value *v = s.get("-")(v1);
+    Value *v = s.get("-")(v1, v2);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Float);
@@ -119,7 +119,7 @@ TEST_CASE("Test mul", "[builtin]") {
     Value *v1 = new IntValue(3);
     Value *v2 = new IntValue(5);
     v1->addLast(v2);
-    Value *v = s.get("*")(v1);
+    Value *v = s.get("*")(v1, v2);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Int);
@@ -134,7 +134,7 @@ TEST_CASE("Test mul mixed int float", "[builtin]") {
     Value *v1 = new IntValue(10);
     Value *v2 = new FloatValue(5.14);
     v1->addLast(v2);
-    Value *v = s.get("*")(v1);
+    Value *v = s.get("*")(v1, v2);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Float);
@@ -149,7 +149,7 @@ TEST_CASE("Test mul float", "[builtin]") {
     Value *v1 = new FloatValue(4.2);
     Value *v2 = new FloatValue(1.7);
     v1->addLast(v2);
-    Value *v = s.get("*")(v1);
+    Value *v = s.get("*")(v1, v2);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Float);
@@ -164,7 +164,7 @@ TEST_CASE("Test div", "[builtin]") {
     Value *v1 = new IntValue(20);
     Value *v2 = new IntValue(3);
     v1->addLast(v2);
-    Value *v = s.get("/")(v1);
+    Value *v = s.get("/")(v1, v2);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Int);
@@ -179,7 +179,7 @@ TEST_CASE("Test div mixed int float", "[builtin]") {
     Value *v1 = new IntValue(55);
     Value *v2 = new FloatValue(5.5);
     v1->addLast(v2);
-    Value *v = s.get("/")(v1);
+    Value *v = s.get("/")(v1, v2);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Float);
@@ -194,7 +194,7 @@ TEST_CASE("Test div float", "[builtin]") {
     Value *v1 = new FloatValue(23.1);
     Value *v2 = new FloatValue(4.2);
     v1->addLast(v2);
-    Value *v = s.get("/")(v1);
+    Value *v = s.get("/")(v1, v2);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Float);

@@ -12,8 +12,8 @@ public:
 
 private:
     Symbols &symbols;
-    static Value *plus(Value *v);
-    static Value *minus(Value *v);
-    static Value *mul(Value *v);
-    static Value *div(Value *v);
+    static Value *plus(Value *a, Value *b);
+    static Value *minus(Value *a, Value *b);
+    static Value *mul(Value *a, Value *b);
+    static Value *div(Value *a, Value *b);
 };

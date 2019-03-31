@@ -51,3 +51,16 @@ TEST_CASE("Eval plus", "[eval]") {
     REQUIRE(v->type() == Type::Int);
     REQUIRE(toInt(v)->value() == 3);
 }
+
+TEST_CASE("Eval plus many", "[eval]") {
+    Tokenize t("(+ 1 2 3)");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Eval e(p, s);
+
+    Value *v = e.eval();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 6);
+}

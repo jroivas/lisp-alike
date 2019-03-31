@@ -20,11 +20,16 @@ Value *Eval::evalSymbol(SymbolValue *symbol)
 {
     std::string val = symbol->value();
     auto h = symbols.get(val);
-    if (h == nullptr) {
+    if (h == nullptr)
         return new StringValue("ERROR: Unknown symbol: " + val);
-    }
 
-    return h(symbol->cdr());
+    Value *res = symbol->cdr();
+    Value *b = res;
+    while (b != nullptr && b->cdr() != nullptr) {
+        b = b->cdr();
+        res = h(res, b);
+    }
+    return res;
 }
 
 Value *Eval::evalList(ListValue *list)

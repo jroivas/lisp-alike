@@ -13,109 +13,66 @@ void Builtin::init()
     symbols.registerSymbol("/", this->div);
 }
 
-Value *Builtin::plus(Value *v)
+double getDoubleNumber(Value *v)
 {
-    if (v == nullptr) return nullptr;
-    long long int a = 0;
-    while (v->type() == Type::Int) {
-        a += toInt(v)->value();
-        v = v->cdr();
-        if (v == nullptr)
-            return new IntValue(a);
-    }
-    double b = a;
-    while (true) {
-        if (v->type() == Type::Int) b += toInt(v)->value();
-        else if (v->type() == Type::Float) b += toFloat(v)->value();
-        else PARSE_ERROR("Can sum only int and float!");
-        v = v->cdr();
-        if (v == nullptr)
-            return new FloatValue(b);
-    }
-
-    return nullptr;
+    if (v->type() == Type::Int) return toInt(v)->value();
+    else if (v->type() == Type::Float) return toFloat(v)->value();
+    PARSE_ERROR("Can sum only int and float!");
+    return 0;
 }
 
-Value *Builtin::minus(Value *v)
+Value *Builtin::plus(Value *a, Value *b)
 {
-    if (v == nullptr) return nullptr;
-    long long int a = 0;
-    bool first = true;
-    while (v->type() == Type::Int) {
-        a = first ? toInt(v)->value() : a - toInt(v)->value();
-        v = v->cdr();
-        if (v == nullptr)
-            return new IntValue(a);
-        first = false;
-    }
-    double b = a;
-    while (true) {
-        if (v->type() == Type::Int) b -= toInt(v)->value();
-        else if (v->type() == Type::Float)
-            b = first ? toFloat(v)->value() :
-                b - toFloat(v)->value();
-        else PARSE_ERROR("Can subtract only int and float!");
-        v = v->cdr();
-        if (v == nullptr)
-            return new FloatValue(b);
-        first = false;
-    }
+    if (a == nullptr && b == nullptr) return nullptr;
+    if (a == nullptr) return b;
+    if (b == nullptr) return a;
 
-    return nullptr;
+    if (a->type() == Type::Float ||
+        b->type() == Type::Float) {
+        return new FloatValue(getDoubleNumber(a) +
+                getDoubleNumber(b));
+    }
+    return new IntValue(toInt(a)->value() + toInt(b)->value());
 }
 
-Value *Builtin::mul(Value *v)
+Value *Builtin::minus(Value *a, Value *b)
 {
-    if (v == nullptr) return nullptr;
-    long long int a = 0;
-    bool first = true;
-    while (v->type() == Type::Int) {
-        a = first ? toInt(v)->value() : a * toInt(v)->value();
-        v = v->cdr();
-        if (v == nullptr)
-            return new IntValue(a);
-        first = false;
-    }
-    double b = a;
-    while (true) {
-        if (v->type() == Type::Int) b *= toInt(v)->value();
-        else if (v->type() == Type::Float)
-            b = first ? toFloat(v)->value() :
-                b * toFloat(v)->value();
-        else PARSE_ERROR("Can multiply only int and float!");
-        v = v->cdr();
-        if (v == nullptr)
-            return new FloatValue(b);
-        first = false;
-    }
+    if (a == nullptr && b == nullptr) return nullptr;
+    if (a == nullptr) return b;
+    if (b == nullptr) return a;
 
-    return nullptr;
+    if (a->type() == Type::Float ||
+        b->type() == Type::Float) {
+        return new FloatValue(getDoubleNumber(a) -
+                getDoubleNumber(b));
+    }
+    return new IntValue(toInt(a)->value() - toInt(b)->value());
 }
 
-Value *Builtin::div(Value *v)
+Value *Builtin::mul(Value *a, Value *b)
 {
-    if (v == nullptr) return nullptr;
-    long long int a = 0;
-    bool first = true;
-    while (v->type() == Type::Int) {
-        a = first ? toInt(v)->value() : a / toInt(v)->value();
-        v = v->cdr();
-        if (v == nullptr)
-            return new IntValue(a);
-        first = false;
-    }
-    double b = a;
-    while (true) {
-        if (v->type() == Type::Int) b /= toInt(v)->value();
-        else if (v->type() == Type::Float)
-            b = first ? toFloat(v)->value() :
-                b / toFloat(v)->value();
-        else PARSE_ERROR("Can multiply only int and float!");
-        v = v->cdr();
-        if (v == nullptr)
-            return new FloatValue(b);
-        first = false;
-    }
+    if (a == nullptr && b == nullptr) return nullptr;
+    if (a == nullptr) return b;
+    if (b == nullptr) return a;
 
-    return nullptr;
+    if (a->type() == Type::Float ||
+        b->type() == Type::Float) {
+        return new FloatValue(getDoubleNumber(a) *
+                getDoubleNumber(b));
+    }
+    return new IntValue(toInt(a)->value() * toInt(b)->value());
+}
+
+Value *Builtin::div(Value *a, Value *b)
+{
+    if (a == nullptr && b == nullptr) return nullptr;
+    if (a == nullptr) return b;
+    if (b == nullptr) return a;
+
+    if (a->type() == Type::Float ||
+        b->type() == Type::Float) {
+        return new FloatValue(getDoubleNumber(a) /
+                getDoubleNumber(b));
+    }
+    return new IntValue(toInt(a)->value() / toInt(b)->value());
 }

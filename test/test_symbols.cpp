@@ -9,13 +9,13 @@ TEST_CASE("Get nonexist symbol", "[symbols]") {
 
 TEST_CASE("Register and get symbol", "[symbols]") {
     Symbols s;
-    auto f = [](Value *v) -> Value* {
+    auto f = [](Value *a, Value *b) -> Value* {
         return new StringValue("got plus");
     };
     s.registerSymbol("+", f);
 
     REQUIRE(s.get("+") != nullptr);
-    Value *v = s.get("+")(nullptr);
+    Value *v = s.get("+")(nullptr, nullptr);
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::String);
     REQUIRE(toString(v)->value() == "got plus");
