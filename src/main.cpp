@@ -4,6 +4,7 @@
 
 #include "history.hh"
 #include "tokenize.hh"
+#include "parse.hh"
 
 int repl()
 {
@@ -14,14 +15,11 @@ int repl()
         std::getline(std::cin, line);
         history.add(line);
 
-#ifdef DEBUG
-        std::cout << "LL: " << line << " " << line.size()
-            << " " << history.size() << "\n";
-#endif
         Tokenize tok(line);
-        while (!tok.eof()) {
-            std::cout << "Token: " << tok.next() << "\n";
-        }
+        Parse p(tok);
+        Value *v = p.readForm();
+        if (v != nullptr)
+            std::cout << v->toString() << "\n";
     }
     return 0;
 }
