@@ -9,6 +9,7 @@ void Builtin::init()
 {
     symbols.registerSymbol("+", this->plus);
     symbols.registerSymbol("-", this->minus);
+    symbols.registerSymbol("*", this->mul);
 }
 
 Value *Builtin::plus(Value *v)
@@ -53,6 +54,34 @@ Value *Builtin::minus(Value *v)
             b = first ? toFloat(v)->value() :
                 b - toFloat(v)->value();
         else PARSE_ERROR("Can subtract only int and float!");
+        v = v->cdr();
+        if (v == nullptr)
+            return new FloatValue(b);
+        first = false;
+    }
+
+    return nullptr;
+}
+
+Value *Builtin::mul(Value *v)
+{
+    if (v == nullptr) return nullptr;
+    long long int a = 0;
+    bool first = true;
+    while (v->type() == Type::Int) {
+        a = first ? toInt(v)->value() : a * toInt(v)->value();
+        v = v->cdr();
+        if (v == nullptr)
+            return new IntValue(a);
+        first = false;
+    }
+    double b = a;
+    while (true) {
+        if (v->type() == Type::Int) b *= toInt(v)->value();
+        else if (v->type() == Type::Float)
+            b = first ? toFloat(v)->value() :
+                b * toFloat(v)->value();
+        else PARSE_ERROR("Can multiply only int and float!");
         v = v->cdr();
         if (v == nullptr)
             return new FloatValue(b);
