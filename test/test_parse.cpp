@@ -66,3 +66,20 @@ TEST_CASE("Parse list with symbols", "[parse]") {
     v = v->cdr();
     REQUIRE(v == nullptr);
 }
+
+TEST_CASE("Parse macro", "[parse]") {
+    Tokenize t("('tst)");
+    Parse p(t);
+    Value *v = p.readForm();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Symbol);
+    REQUIRE(toSymbol(v)->value() == "quote");
+
+    v = v->cdr();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Symbol);
+    REQUIRE(toSymbol(v)->value() == "tst");
+
+    v = v->cdr();
+    REQUIRE(v == nullptr);
+}

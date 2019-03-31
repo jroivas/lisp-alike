@@ -25,6 +25,9 @@ public:
         while (p->next != nullptr) p = p->next;
         p->next = v;
     }
+    void setNext(Value *v) {
+        next = v;
+    }
 
 protected:
     Value(Type t) : valueType(t), next(nullptr) {}

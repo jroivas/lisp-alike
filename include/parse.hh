@@ -10,6 +10,8 @@ public:
     Value *readForm();
     Value *readAtom();
     Value *readList(std::string endMark);
+    Value *readMacro(std::string token);
+    Value *processMacro(std::string symbol);
 
 private:
     Tokenize &tokenize;

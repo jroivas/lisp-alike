@@ -15,6 +15,20 @@ Value *Parse::readForm()
     return readAtom();
 }
 
+Value *Parse::processMacro(std::string symbol)
+{
+    Value *v = new SymbolValue(symbol);
+    v->setNext(readForm());
+    return v;
+}
+
+Value *Parse::readMacro(std::string token)
+{
+    if (token == "'") return processMacro("quote");
+
+    return nullptr;
+}
+
 Value *Parse::readAtom()
 {
     std::string token = tokenize.next();
@@ -26,6 +40,10 @@ Value *Parse::readAtom()
 
     if (std::regex_match(token, intRegex))
         return new IntValue(atoll(token.c_str()));
+
+    Value *macro = readMacro(token);
+    if (macro != nullptr)
+        return macro;
 
     return new SymbolValue(token);
 }
