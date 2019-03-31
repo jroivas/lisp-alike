@@ -53,7 +53,7 @@ Value *Parse::readAtom()
         return new StringValue(token.substr(1, token.length() - 2));
 
     if (std::regex_match(token, intRegex))
-        return new IntValue(atoll(token.c_str()));
+        return new IntValue(std::stoll(token.c_str()));
 
     if (std::regex_match(token, floatRegex))
         return new FloatValue(std::stod(token));
