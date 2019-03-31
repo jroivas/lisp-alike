@@ -17,9 +17,9 @@ Value *Builtin::plus(Value *v)
     long long int a = 0;
     while (v->type() == Type::Int) {
         a += toInt(v)->value();
-        if (v->cdr() == nullptr)
-            return new IntValue(a);
         v = v->cdr();
+        if (v == nullptr)
+            return new IntValue(a);
     }
     double b = a;
     while (true) {
@@ -30,9 +30,9 @@ Value *Builtin::plus(Value *v)
         } else {
             PARSE_ERROR("Can sum only int and float!");
         }
-        if (v->cdr() == nullptr)
-            return new FloatValue(b);
         v = v->cdr();
+        if (v == nullptr)
+            return new FloatValue(b);
     }
 
     return nullptr;
@@ -46,9 +46,9 @@ Value *Builtin::minus(Value *v)
     while (v->type() == Type::Int) {
         if (first) a = toInt(v)->value();
         else a -= toInt(v)->value();
-        if (v->cdr() == nullptr)
-            return new IntValue(a);
         v = v->cdr();
+        if (v == nullptr)
+            return new IntValue(a);
         first = false;
     }
     double b = a;
@@ -61,9 +61,9 @@ Value *Builtin::minus(Value *v)
         } else {
             PARSE_ERROR("Can subtract only int and float!");
         }
-        if (v->cdr() == nullptr)
-            return new FloatValue(b);
         v = v->cdr();
+        if (v == nullptr)
+            return new FloatValue(b);
         first = false;
     }
 

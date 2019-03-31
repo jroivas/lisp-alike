@@ -23,10 +23,10 @@ public:
     Type type() const {
         return valueType;
     }
-    Value *car() {
+    const Value *car() const {
         return this;
     }
-    Value *cdr() {
+    Value *cdr() const {
         return next;
     }
     void addLast(Value *v) {
