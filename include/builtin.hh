@@ -15,4 +15,5 @@ private:
     static Value *plus(Value *v);
     static Value *minus(Value *v);
     static Value *mul(Value *v);
+    static Value *div(Value *v);
 };
