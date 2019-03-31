@@ -83,3 +83,23 @@ TEST_CASE("Parse macro", "[parse]") {
     v = v->cdr();
     REQUIRE(v == nullptr);
 }
+
+TEST_CASE("Parse constant", "[parse]") {
+    Tokenize t("(false true nil)");
+    Parse p(t);
+
+    Value *v = p.readForm();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Bool);
+    REQUIRE(toBool(v)->value() == false);
+
+    v = v->cdr();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Bool);
+    REQUIRE(toBool(v)->value() == true);
+
+    v = v->cdr();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Nil);
+    REQUIRE(toNil(v)->value() == nullptr);
+}

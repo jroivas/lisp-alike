@@ -33,6 +33,15 @@ Value *Parse::readMacro(std::string token)
     return nullptr;
 }
 
+Value *Parse::readConstant(std::string token)
+{
+    if (token == "false") return new BoolValue(false);
+    if (token == "true") return new BoolValue(true);
+    if (token == "nil") return new NilValue();
+
+    return nullptr;
+}
+
 Value *Parse::readAtom()
 {
     std::string token = tokenize.next();
@@ -48,6 +57,10 @@ Value *Parse::readAtom()
     Value *macro = readMacro(token);
     if (macro != nullptr)
         return macro;
+
+    Value *constant = readConstant(token);
+    if (constant != nullptr)
+        return constant;
 
     return new SymbolValue(token);
 }

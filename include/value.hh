@@ -4,7 +4,9 @@ enum class Type {
     None,
     String,
     Int,
-    Symbol
+    Symbol,
+    Nil,
+    Bool
 };
 
 class Value
@@ -51,4 +53,13 @@ x ## Value* to##x(Value *val) { return (x ## Value*)val; }
 
 ValueDef(String, Type::String, std::string)
 ValueDef(Symbol, Type::Symbol, std::string)
+ValueDef(Bool, Type::Bool, bool)
 ValueDef(Int, Type::Int, long long int)
+
+class NilValue : public Value
+{
+public:
+    NilValue() : Value(Type::Nil) {}
+    Value *value() { return nullptr; }
+};
+NilValue *toNil(Value *val) { return (NilValue*)val; }

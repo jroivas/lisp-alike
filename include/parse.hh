@@ -12,6 +12,7 @@ public:
     Value *readList(std::string endMark);
     Value *readMacro(std::string token);
     Value *processMacro(std::string symbol);
+    Value *readConstant(std::string token);
 
 private:
     Tokenize &tokenize;
