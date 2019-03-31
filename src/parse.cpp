@@ -81,6 +81,5 @@ Value *Parse::readList(std::string endMark)
     tokenize.next();
 
     current = new ListValue(first);
-    current->setNext(first);
     return current;
 }

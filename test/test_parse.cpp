@@ -49,7 +49,7 @@ TEST_CASE("Parse simple list", "[parse]") {
     REQUIRE(v->type() == Type::List);
 
     REQUIRE(toList(v)->value() != nullptr);
-    REQUIRE(toList(v)->cdr() != nullptr);
+    REQUIRE(toList(v)->cdr() == nullptr);
 }
 
 
@@ -70,6 +70,7 @@ TEST_CASE("Parse item list", "[parse]") {
     REQUIRE(toInt(v)->value() == 2);
 }
 
+#if 0
 TEST_CASE("Parse item list by cdr only", "[parse]") {
     Tokenize t("(1 2)");
     Parse p(t);
@@ -86,6 +87,7 @@ TEST_CASE("Parse item list by cdr only", "[parse]") {
     REQUIRE(v != nullptr);
     REQUIRE(toInt(v)->value() == 2);
 }
+#endif
 
 TEST_CASE("Parse list with symbols", "[parse]") {
     Tokenize t("(+ 1 2)");
@@ -190,4 +192,59 @@ TEST_CASE("Parse more complex statement", "[parse]") {
 
     v = v->cdr();
     REQUIRE(v == nullptr);
+}
+
+TEST_CASE("Parse more complex lists", "[parse]") {
+    Tokenize t("( a (b) (c) (d (e)))");
+
+    Parse p(t);
+
+    Value *main = p.readForm();
+    REQUIRE(main != nullptr);
+    REQUIRE(main->type() == Type::List);
+
+    main = toList(main)->value();
+    REQUIRE(main != nullptr);
+    REQUIRE(main->type() == Type::Symbol);
+    REQUIRE(toSymbol(main)->value() == "a");
+
+    main = main->cdr();
+    REQUIRE(main != nullptr);
+    REQUIRE(main->type() == Type::List);
+
+    Value *v = toList(main)->value();
+    REQUIRE(v != nullptr);
+    REQUIRE(toSymbol(v)->value() == "b");
+    REQUIRE(v->cdr() == nullptr);
+
+    main = main->cdr();
+    REQUIRE(main != nullptr);
+    REQUIRE(main->type() == Type::List);
+
+    v = toList(main)->value();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Symbol);
+    REQUIRE(toSymbol(v)->value() == "c");
+    REQUIRE(v->cdr() == nullptr);
+
+    main = main->cdr();
+    REQUIRE(main != nullptr);
+    REQUIRE(main->type() == Type::List);
+    REQUIRE(main->cdr() == nullptr);
+
+    v = toList(main)->value();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Symbol);
+    REQUIRE(toSymbol(v)->value() == "d");
+
+    v = v->cdr();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::List);
+    REQUIRE(v->cdr() == nullptr);
+
+    v = toList(v)->value();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Symbol);
+    REQUIRE(toSymbol(v)->value() == "e");
+    REQUIRE(v->cdr() == nullptr);
 }
