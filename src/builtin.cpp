@@ -23,13 +23,9 @@ Value *Builtin::plus(Value *v)
     }
     double b = a;
     while (true) {
-        if (v->type() == Type::Int) {
-            b += toInt(v)->value();
-        } else if (v->type() == Type::Float) {
-            b += toFloat(v)->value();
-        } else {
-            PARSE_ERROR("Can sum only int and float!");
-        }
+        if (v->type() == Type::Int) b += toInt(v)->value();
+        else if (v->type() == Type::Float) b += toFloat(v)->value();
+        else PARSE_ERROR("Can sum only int and float!");
         v = v->cdr();
         if (v == nullptr)
             return new FloatValue(b);
@@ -44,8 +40,7 @@ Value *Builtin::minus(Value *v)
     long long int a = 0;
     bool first = true;
     while (v->type() == Type::Int) {
-        if (first) a = toInt(v)->value();
-        else a -= toInt(v)->value();
+        a = first ? toInt(v)->value() : a - toInt(v)->value();
         v = v->cdr();
         if (v == nullptr)
             return new IntValue(a);
@@ -53,14 +48,11 @@ Value *Builtin::minus(Value *v)
     }
     double b = a;
     while (true) {
-        if (v->type() == Type::Int) {
-            b -= toInt(v)->value();
-        } else if (v->type() == Type::Float) {
-            if (first) b = toFloat(v)->value();
-            else b -= toFloat(v)->value();
-        } else {
-            PARSE_ERROR("Can subtract only int and float!");
-        }
+        if (v->type() == Type::Int) b -= toInt(v)->value();
+        else if (v->type() == Type::Float)
+            b = first ? toFloat(v)->value() :
+                b - toFloat(v)->value();
+        else PARSE_ERROR("Can subtract only int and float!");
         v = v->cdr();
         if (v == nullptr)
             return new FloatValue(b);
