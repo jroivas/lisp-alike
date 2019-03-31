@@ -10,5 +10,8 @@ public:
     Value *eval();
 
 private:
+    Value *evalList(ListValue *list);
+    Value *evalSymbol(SymbolValue *symbol);
+
     Parse &parse;
 };

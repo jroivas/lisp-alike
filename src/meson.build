@@ -1,6 +1,7 @@
 lipslib = library('lipsl',
     sources: [
         'history.cpp',
+        'symbols.cpp',
         'tokenize.cpp',
         'value.cpp',
         'parse.cpp',
