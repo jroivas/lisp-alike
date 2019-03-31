@@ -25,6 +25,10 @@ Value *Parse::processMacro(std::string symbol)
 Value *Parse::readMacro(std::string token)
 {
     if (token == "'") return processMacro("quote");
+    if (token == "`") return processMacro("quasiquote");
+    if (token == "@") return processMacro("deref");
+    if (token == "~@") return processMacro("splice-unquote");
+    if (token == "~") return processMacro("unquote");
 
     return nullptr;
 }
