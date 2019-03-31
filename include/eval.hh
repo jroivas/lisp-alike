@@ -11,6 +11,7 @@ public:
     Value *eval();
 
 private:
+    Value *evalValue(Value *v);
     Value *evalList(ListValue *list);
     Value *evalSymbol(SymbolValue *symbol);
 

@@ -64,3 +64,29 @@ TEST_CASE("Eval plus many", "[eval]") {
     REQUIRE(v->type() == Type::Int);
     REQUIRE(toInt(v)->value() == 6);
 }
+
+TEST_CASE("Eval inside lists", "[eval]") {
+    Tokenize t("(+ 1 (* 2 3))");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Eval e(p, s);
+
+    Value *v = e.eval();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 7);
+}
+
+TEST_CASE("Eval inside lists first", "[eval]") {
+    Tokenize t("(+ (* 2 3) 5)");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Eval e(p, s);
+
+    Value *v = e.eval();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 11);
+}

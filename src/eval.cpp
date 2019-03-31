@@ -7,11 +7,18 @@ Eval::Eval(Parse &p, Symbols &s) : parse(p), symbols(s)
 
 Value *Eval::eval()
 {
-    Value *v = parse.readForm();
+    return evalValue(parse.readForm());
+}
+
+Value *Eval::evalValue(Value *v)
+{
     if (v == nullptr) return nullptr;
 
     if (v->type() == Type::List)
         return evalList(toList(v));
+
+    if (v->type() == Type::Symbol)
+        return evalSymbol(toSymbol(v));
 
     return v;
 }
@@ -23,10 +30,10 @@ Value *Eval::evalSymbol(SymbolValue *symbol)
     if (h == nullptr)
         return new StringValue("ERROR: Unknown symbol: " + val);
 
-    Value *res = symbol->cdr();
-    Value *b = res;
+    Value *res = evalValue(symbol->cdr());
+    Value *b = symbol->cdr();
     while (b != nullptr && b->cdr() != nullptr) {
-        b = b->cdr();
+        b = evalValue(b->cdr());
         res = h(res, b);
     }
     return res;
