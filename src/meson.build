@@ -1,4 +1,4 @@
-lipslib = library('lipsl',
+lisplib = library('lisp-alike',
     sources: [
         'history.cpp',
         'symbols.cpp',
@@ -14,7 +14,7 @@ lipslib = library('lipsl',
     ]
 )
 
-my_lips = executable('my-lips',
+lisp_alike = executable('lisp-alike',
     sources: [
         'main.cpp'
     ],
@@ -23,6 +23,6 @@ my_lips = executable('my-lips',
         main_inc
     ],
     link_with: [
-        lipslib
+        lisplib
     ]
 )

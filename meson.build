@@ -1,4 +1,4 @@
-project('my-lips', 'cpp')
+project('lisp-alike', 'cpp')
 
 add_global_arguments('-std=c++11', language : 'cpp')
 add_global_arguments('-fPIC', language : 'cpp')

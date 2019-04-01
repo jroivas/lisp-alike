@@ -16,7 +16,7 @@ int repl()
     Symbols s;
     Builtin b(s);
     while (!std::cin.eof()) {
-        std::cout << "lips> ";
+        std::cout << "lisp> ";
         std::getline(std::cin, line);
         history.add(line);
 

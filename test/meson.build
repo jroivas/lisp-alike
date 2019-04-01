@@ -4,7 +4,7 @@ catch_header = custom_target('catch-header',
         meson.current_source_dir() + '/update_catch.sh'
     ])
 
-test_lips = executable('test-lips',
+test_lisp = executable('test-lisp',
     sources: [
         catch_header,
         'test.cpp',
@@ -21,8 +21,8 @@ test_lips = executable('test-lips',
         main_inc
     ],
     link_with: [
-        lipslib
+        lisplib
     ]
 )
 
-test('Test lips', test_lips)
+test('Test lips', test_lisp)
