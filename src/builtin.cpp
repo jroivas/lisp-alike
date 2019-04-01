@@ -62,6 +62,7 @@ Value *Builtin::mul(Value *a, Value *b)
     }
     return new IntValue(toInt(a)->value() * toInt(b)->value());
 }
+#include <iostream>
 
 Value *Builtin::div(Value *a, Value *b)
 {
@@ -71,8 +72,11 @@ Value *Builtin::div(Value *a, Value *b)
 
     if (a->type() == Type::Float ||
         b->type() == Type::Float) {
-        return new FloatValue(getDoubleNumber(a) /
-                getDoubleNumber(b));
+        double div = getDoubleNumber(b);
+        if (div == 0.0) ERROR("Divide by zero");
+        return new FloatValue(getDoubleNumber(a) / div);
     }
-    return new IntValue(toInt(a)->value() / toInt(b)->value());
+    long long int div = toInt(b)->value();
+    if (div == 0) ERROR("Divide by zero");
+    return new IntValue(toInt(a)->value() / div);
 }

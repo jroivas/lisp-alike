@@ -200,3 +200,25 @@ TEST_CASE("Test div float", "[builtin]") {
     REQUIRE(v->type() == Type::Float);
     REQUIRE(toFloat(v)->value() == 5.5);
 }
+
+TEST_CASE("Test div by zero float", "[builtin]") {
+    Symbols s;
+    Builtin b(s);
+
+    REQUIRE(s.get("/") != nullptr);
+    Value *v1 = new FloatValue(10);
+    Value *v2 = new IntValue(0);
+    v1->addLast(v2);
+    REQUIRE_THROWS(s.get("/")(v1, v2));
+}
+
+TEST_CASE("Test div by zero", "[builtin]") {
+    Symbols s;
+    Builtin b(s);
+
+    REQUIRE(s.get("/") != nullptr);
+    Value *v1 = new IntValue(10);
+    Value *v2 = new IntValue(0);
+    v1->addLast(v2);
+    REQUIRE_THROWS(s.get("/")(v1, v2));
+}
