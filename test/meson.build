@@ -25,4 +25,4 @@ test_lisp = executable('test-lisp',
     ]
 )
 
-test('Test lips', test_lisp)
+test('Test lisp', test_lisp)
