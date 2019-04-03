@@ -21,7 +21,7 @@ double getDoubleNumber(Value *v)
     return 0;
 }
 
-Value *Builtin::plus(Value *a, Value *b)
+Value *Builtin::plus(Value *a, Value *b, Env *e)
 {
     if (a == nullptr && b == nullptr) return nullptr;
     if (a == nullptr) return b;
@@ -35,7 +35,7 @@ Value *Builtin::plus(Value *a, Value *b)
     return new IntValue(toInt(a)->value() + toInt(b)->value());
 }
 
-Value *Builtin::minus(Value *a, Value *b)
+Value *Builtin::minus(Value *a, Value *b, Env *e)
 {
     if (a == nullptr && b == nullptr) return nullptr;
     if (a == nullptr) return b;
@@ -49,7 +49,7 @@ Value *Builtin::minus(Value *a, Value *b)
     return new IntValue(toInt(a)->value() - toInt(b)->value());
 }
 
-Value *Builtin::mul(Value *a, Value *b)
+Value *Builtin::mul(Value *a, Value *b, Env *e)
 {
     if (a == nullptr && b == nullptr) return nullptr;
     if (a == nullptr) return b;
@@ -62,9 +62,8 @@ Value *Builtin::mul(Value *a, Value *b)
     }
     return new IntValue(toInt(a)->value() * toInt(b)->value());
 }
-#include <iostream>
 
-Value *Builtin::div(Value *a, Value *b)
+Value *Builtin::div(Value *a, Value *b, Env *e)
 {
     if (a == nullptr && b == nullptr) return nullptr;
     if (a == nullptr) return b;

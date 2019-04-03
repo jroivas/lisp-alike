@@ -35,7 +35,7 @@ Value *Eval::evalSymbol(SymbolValue *symbol)
     Value *b = symbol->cdr();
     while (b != nullptr && b->cdr() != nullptr) {
         b = evalValue(b->cdr());
-        res = h(res, b);
+        res = h(res, b, &env);
     }
     return res;
 }

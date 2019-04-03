@@ -1,6 +1,7 @@
 #include "catch.hpp"
 #include "symbols.hh"
 #include "value.hh"
+#include "env.hh"
 
 TEST_CASE("Get nonexist symbol", "[symbols]") {
     Symbols s;
@@ -9,13 +10,13 @@ TEST_CASE("Get nonexist symbol", "[symbols]") {
 
 TEST_CASE("Register and get symbol", "[symbols]") {
     Symbols s;
-    auto f = [](Value *a, Value *b) -> Value* {
+    auto f = [](Value *a, Value *b, Env *) -> Value* {
         return new StringValue("got plus");
     };
     s.registerSymbol("+", f);
 
     REQUIRE(s.get("+") != nullptr);
-    Value *v = s.get("+")(nullptr, nullptr);
+    Value *v = s.get("+")(nullptr, nullptr, nullptr);
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::String);
     REQUIRE(toString(v)->value() == "got plus");

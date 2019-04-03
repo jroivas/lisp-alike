@@ -1,12 +1,13 @@
 #pragma once
 
-#include "value.hh"
 #include <unordered_map>
+#include "value.hh"
+#include "env.hh"
 
 class Symbols
 {
 public:
-    typedef Value *(Handler)(Value *a, Value *b);
+    typedef Value *(Handler)(Value *a, Value *b, Env *e);
 
     Symbols() {}
     void registerSymbol(std::string name, Handler h);
