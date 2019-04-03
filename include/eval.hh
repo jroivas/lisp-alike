@@ -3,11 +3,12 @@
 #include "value.hh"
 #include "parse.hh"
 #include "symbols.hh"
+#include "env.hh"
 
 class Eval
 {
 public:
-    Eval(Parse &p, Symbols &s);
+    Eval(Parse &p, Symbols &s, Env &e);
     Value *eval();
 
 private:
@@ -17,4 +18,5 @@ private:
 
     Parse &parse;
     Symbols &symbols;
+    Env &env;
 };

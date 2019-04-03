@@ -3,13 +3,15 @@
 #include "parse.hh"
 #include "value.hh"
 #include "eval.hh"
+#include "env.hh"
 #include "builtin.hh"
 
 TEST_CASE("Eval empty", "[eval]") {
     Tokenize t("");
     Parse p(t);
     Symbols s;
-    Eval e(p, s);
+    Env n;
+    Eval e(p, s, n);
 
     Value *v = e.eval();
     REQUIRE(v == nullptr);
@@ -19,7 +21,8 @@ TEST_CASE("Eval number", "[eval]") {
     Tokenize t("42");
     Parse p(t);
     Symbols s;
-    Eval e(p, s);
+    Env n;
+    Eval e(p, s, n);
 
     Value *v = e.eval();
     REQUIRE(v != nullptr);
@@ -31,7 +34,8 @@ TEST_CASE("Eval string", "[eval]") {
     Tokenize t("\"42\"");
     Parse p(t);
     Symbols s;
-    Eval e(p, s);
+    Env n;
+    Eval e(p, s, n);
 
     Value *v = e.eval();
     REQUIRE(v != nullptr);
@@ -44,7 +48,8 @@ TEST_CASE("Eval plus", "[eval]") {
     Parse p(t);
     Symbols s;
     Builtin b(s);
-    Eval e(p, s);
+    Env n;
+    Eval e(p, s, n);
 
     Value *v = e.eval();
     REQUIRE(v != nullptr);
@@ -57,7 +62,8 @@ TEST_CASE("Eval plus many", "[eval]") {
     Parse p(t);
     Symbols s;
     Builtin b(s);
-    Eval e(p, s);
+    Env n;
+    Eval e(p, s, n);
 
     Value *v = e.eval();
     REQUIRE(v != nullptr);
@@ -70,7 +76,8 @@ TEST_CASE("Eval inside lists", "[eval]") {
     Parse p(t);
     Symbols s;
     Builtin b(s);
-    Eval e(p, s);
+    Env n;
+    Eval e(p, s, n);
 
     Value *v = e.eval();
     REQUIRE(v != nullptr);
@@ -83,7 +90,8 @@ TEST_CASE("Eval inside lists first", "[eval]") {
     Parse p(t);
     Symbols s;
     Builtin b(s);
-    Eval e(p, s);
+    Env n;
+    Eval e(p, s, n);
 
     Value *v = e.eval();
     REQUIRE(v != nullptr);

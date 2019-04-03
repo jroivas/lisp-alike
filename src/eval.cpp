@@ -1,7 +1,8 @@
 #include "eval.hh"
 #include "builtin.hh"
 
-Eval::Eval(Parse &p, Symbols &s) : parse(p), symbols(s)
+Eval::Eval(Parse &p, Symbols &s, Env &e) :
+    parse(p), symbols(s), env(e)
 {
 }
 

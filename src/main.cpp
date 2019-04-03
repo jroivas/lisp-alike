@@ -8,12 +8,14 @@
 #include "symbols.hh"
 #include "builtin.hh"
 #include "eval.hh"
+#include "env.hh"
 
 int repl()
 {
     History history;
     std::string line;
     Symbols s;
+    Env env;
     Builtin b(s);
     while (!std::cin.eof()) {
         std::cout << "lisp> ";
@@ -23,7 +25,7 @@ int repl()
         try {
             Tokenize tok(line);
             Parse p(tok);
-            Eval e(p, s);
+            Eval e(p, s, env);
             Value *ev = e.eval();
             if (ev != nullptr)
                 std::cout << ev->toString() << "\n";
