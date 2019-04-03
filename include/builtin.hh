@@ -17,4 +17,5 @@ private:
     static Value *minus(Value *a, Value *b, Env *n);
     static Value *mul(Value *a, Value *b, Env *n);
     static Value *div(Value *a, Value *b, Env *n);
+    static Value *def(Value *a, Value *b, Env *n);
 };

@@ -11,6 +11,7 @@ void Builtin::init()
     symbols.registerSymbol("-", this->minus);
     symbols.registerSymbol("*", this->mul);
     symbols.registerSymbol("/", this->div);
+    symbols.registerSymbol("def!", this->def);
 }
 
 double getDoubleNumber(Value *v)
@@ -78,4 +79,13 @@ Value *Builtin::div(Value *a, Value *b, Env *e)
     long long int div = toInt(b)->value();
     if (div == 0) ERROR("Divide by zero");
     return new IntValue(toInt(a)->value() / div);
+}
+
+Value *Builtin::def(Value *a, Value *b, Env *e)
+{
+    if (a == nullptr) return nullptr;
+    if (a->type() != Type::String) return nullptr;
+
+    e->set(toString(a)->value(), b);
+    return b;
 }

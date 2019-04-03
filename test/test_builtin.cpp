@@ -237,3 +237,17 @@ TEST_CASE("Test div by zero", "[builtin]") {
     v1->addLast(v2);
     REQUIRE_THROWS(s.get("/")(v1, v2, &n));
 }
+
+TEST_CASE("Test div by zero", "[builtin]") {
+    Symbols s;
+    Env n;
+    Builtin b(s);
+
+    REQUIRE(s.get("def!")!= nullptr);
+    Value *v1 = new StringValue("a");
+    Value *v2 = new IntValue(6);
+    REQUIRE(s.get("def!")(v1, v2, &n) == v2);
+
+    REQUIRE(n.get("a") != nullptr);
+    REQUIRE(n.get("a") == v2);
+}
