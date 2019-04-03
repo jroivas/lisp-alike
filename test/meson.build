@@ -13,7 +13,8 @@ test_lisp = executable('test-lisp',
         'test_builtin.cpp',
         'test_value.cpp',
         'test_parse.cpp',
-        'test_eval.cpp'
+        'test_eval.cpp',
+        'test_env.cpp'
     ],
     include_directories: [
         test_inc,

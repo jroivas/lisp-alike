@@ -6,7 +6,8 @@ lisplib = library('lisp-alike',
         'tokenize.cpp',
         'value.cpp',
         'parse.cpp',
-        'eval.cpp'
+        'eval.cpp',
+        'env.cpp'
     ],
     include_directories: [
         top_inc,
