@@ -84,8 +84,8 @@ Value *Builtin::div(Value *a, Value *b, Env *e)
 Value *Builtin::def(Value *a, Value *b, Env *e)
 {
     if (a == nullptr) return nullptr;
-    if (a->type() != Type::String) return nullptr;
+    if (a->type() != Type::Symbol) return nullptr;
 
-    e->set(toString(a)->value(), b);
+    e->set(toSymbol(a)->value(), b);
     return b;
 }

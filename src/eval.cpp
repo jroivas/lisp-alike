@@ -28,8 +28,11 @@ Value *Eval::evalSymbol(SymbolValue *symbol)
 {
     std::string val = symbol->value();
     auto h = symbols.get(val);
-    if (h == nullptr)
-        return new StringValue("ERROR: Unknown symbol: " + val);
+    if (h == nullptr) {
+        Value *v = env.get(val);
+        if (v != nullptr) return v;
+        return symbol;
+    }
 
     Value *res = evalValue(symbol->cdr());
     Value *b = symbol->cdr();

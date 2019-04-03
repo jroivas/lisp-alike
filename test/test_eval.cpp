@@ -98,3 +98,22 @@ TEST_CASE("Eval inside lists first", "[eval]") {
     REQUIRE(v->type() == Type::Int);
     REQUIRE(toInt(v)->value() == 11);
 }
+
+TEST_CASE("Eval define and val", "[eval]") {
+    Tokenize t1("(def! a 6)");
+    Parse p1(t1);
+    Tokenize t2("a");
+    Parse p2(t2);
+
+    Symbols s;
+    Builtin b(s);
+    Env n;
+
+    Eval e1(p1, s, n);
+    e1.eval();
+
+    Eval e2(p2, s, n);
+    Value *v = e2.eval();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+}
