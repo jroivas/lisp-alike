@@ -4,10 +4,11 @@
 #include "value.hh"
 #include "env.hh"
 
+class Eval;
 class Symbols
 {
 public:
-    typedef Value *(Handler)(Value *a, Value *b, Env *e);
+    typedef Value *(Handler)(Value *a, Value *b, Eval *ev, Env *en);
 
     Symbols() {}
     void registerSymbol(std::string name, Handler h);

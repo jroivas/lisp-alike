@@ -20,6 +20,7 @@ int repl()
     while (!std::cin.eof()) {
         std::cout << "lisp> ";
         std::getline(std::cin, line);
+        if (std::cin.eof()) break;
         history.add(line);
 
         try {

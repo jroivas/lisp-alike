@@ -145,3 +145,17 @@ TEST_CASE("Eval let* complex", "[eval]") {
     REQUIRE(v->type() == Type::Int);
     REQUIRE(toInt(v)->value() == 42);
 }
+
+TEST_CASE("Eval let* complex", "[eval]") {
+    Tokenize t("(let* ((a 5) (b 7)) (* a b))");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v = e.eval(p);
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 35);
+}

@@ -14,12 +14,13 @@ TEST_CASE("Test plus", "[builtin]") {
     Symbols s;
     Env n;
     Builtin b(s);
+    Eval ev(s, n);
 
     REQUIRE(s.get("+") != nullptr);
     Value *v1 = new IntValue(3);
     Value *v2 = new IntValue(5);
     v1->addLast(v2);
-    Value *v = s.get("+")(v1, v2, &n);
+    Value *v = s.get("+")(v1, v2, &ev, &n);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Int);
@@ -30,12 +31,13 @@ TEST_CASE("Test plus mixed int float", "[builtin]") {
     Symbols s;
     Env n;
     Builtin b(s);
+    Eval ev(s, n);
 
     REQUIRE(s.get("+") != nullptr);
     Value *v1 = new IntValue(3);
     Value *v2 = new FloatValue(5.14);
     v1->addLast(v2);
-    Value *v = s.get("+")(v1, v2, &n);
+    Value *v = s.get("+")(v1, v2, &ev, &n);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Float);
@@ -46,12 +48,13 @@ TEST_CASE("Test plus float", "[builtin]") {
     Symbols s;
     Env n;
     Builtin b(s);
+    Eval ev(s, n);
 
     REQUIRE(s.get("+") != nullptr);
     Value *v1 = new FloatValue(1.2);
     Value *v2 = new FloatValue(4.7);
     v1->addLast(v2);
-    Value *v = s.get("+")(v1, v2, &n);
+    Value *v = s.get("+")(v1, v2, &ev, &n);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Float);
@@ -62,24 +65,26 @@ TEST_CASE("Test plus faulty", "[builtin]") {
     Symbols s;
     Env n;
     Builtin b(s);
+    Eval ev(s, n);
 
     REQUIRE(s.get("+") != nullptr);
     Value *v1 = new IntValue(5);
     Value *v2 = new StringValue("tmp");
     v1->addLast(v2);
-    REQUIRE_THROWS(s.get("+")(v1, v2, &n));
+    REQUIRE_THROWS(s.get("+")(v1, v2, &ev, &n));
 }
 
 TEST_CASE("Test minus", "[builtin]") {
     Symbols s;
     Env n;
     Builtin b(s);
+    Eval ev(s, n);
 
     REQUIRE(s.get("-") != nullptr);
     Value *v1 = new IntValue(3);
     Value *v2 = new IntValue(5);
     v1->addLast(v2);
-    Value *v = s.get("-")(v1, v2, &n);
+    Value *v = s.get("-")(v1, v2, &ev, &n);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Int);
@@ -90,12 +95,13 @@ TEST_CASE("Test minus mixed int float", "[builtin]") {
     Symbols s;
     Env n;
     Builtin b(s);
+    Eval ev(s, n);
 
     REQUIRE(s.get("-") != nullptr);
     Value *v1 = new IntValue(10);
     Value *v2 = new FloatValue(5.14);
     v1->addLast(v2);
-    Value *v = s.get("-")(v1, v2, &n);
+    Value *v = s.get("-")(v1, v2, &ev, &n);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Float);
@@ -106,12 +112,13 @@ TEST_CASE("Test minus float", "[builtin]") {
     Symbols s;
     Env n;
     Builtin b(s);
+    Eval ev(s, n);
 
     REQUIRE(s.get("-") != nullptr);
     Value *v1 = new FloatValue(4.2);
     Value *v2 = new FloatValue(1.7);
     v1->addLast(v2);
-    Value *v = s.get("-")(v1, v2, &n);
+    Value *v = s.get("-")(v1, v2, &ev, &n);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Float);
@@ -122,12 +129,13 @@ TEST_CASE("Test mul", "[builtin]") {
     Symbols s;
     Env n;
     Builtin b(s);
+    Eval ev(s, n);
 
     REQUIRE(s.get("*") != nullptr);
     Value *v1 = new IntValue(3);
     Value *v2 = new IntValue(5);
     v1->addLast(v2);
-    Value *v = s.get("*")(v1, v2, &n);
+    Value *v = s.get("*")(v1, v2, &ev, &n);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Int);
@@ -138,12 +146,13 @@ TEST_CASE("Test mul mixed int float", "[builtin]") {
     Symbols s;
     Env n;
     Builtin b(s);
+    Eval ev(s, n);
 
     REQUIRE(s.get("*") != nullptr);
     Value *v1 = new IntValue(10);
     Value *v2 = new FloatValue(5.14);
     v1->addLast(v2);
-    Value *v = s.get("*")(v1, v2, &n);
+    Value *v = s.get("*")(v1, v2, &ev, &n);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Float);
@@ -154,12 +163,13 @@ TEST_CASE("Test mul float", "[builtin]") {
     Symbols s;
     Env n;
     Builtin b(s);
+    Eval ev(s, n);
 
     REQUIRE(s.get("*") != nullptr);
     Value *v1 = new FloatValue(4.2);
     Value *v2 = new FloatValue(1.7);
     v1->addLast(v2);
-    Value *v = s.get("*")(v1, v2, &n);
+    Value *v = s.get("*")(v1, v2, &ev, &n);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Float);
@@ -170,12 +180,13 @@ TEST_CASE("Test div", "[builtin]") {
     Symbols s;
     Env n;
     Builtin b(s);
+    Eval ev(s, n);
 
     REQUIRE(s.get("/") != nullptr);
     Value *v1 = new IntValue(20);
     Value *v2 = new IntValue(3);
     v1->addLast(v2);
-    Value *v = s.get("/")(v1, v2, &n);
+    Value *v = s.get("/")(v1, v2, &ev, &n);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Int);
@@ -186,12 +197,13 @@ TEST_CASE("Test div mixed int float", "[builtin]") {
     Symbols s;
     Env n;
     Builtin b(s);
+    Eval ev(s, n);
 
     REQUIRE(s.get("/") != nullptr);
     Value *v1 = new IntValue(55);
     Value *v2 = new FloatValue(5.5);
     v1->addLast(v2);
-    Value *v = s.get("/")(v1, v2, &n);
+    Value *v = s.get("/")(v1, v2, &ev, &n);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Float);
@@ -202,12 +214,13 @@ TEST_CASE("Test div float", "[builtin]") {
     Symbols s;
     Env n;
     Builtin b(s);
+    Eval ev(s, n);
 
     REQUIRE(s.get("/") != nullptr);
     Value *v1 = new FloatValue(23.1);
     Value *v2 = new FloatValue(4.2);
     v1->addLast(v2);
-    Value *v = s.get("/")(v1, v2, &n);
+    Value *v = s.get("/")(v1, v2, &ev, &n);
 
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Float);
@@ -218,35 +231,38 @@ TEST_CASE("Test div by zero float", "[builtin]") {
     Symbols s;
     Env n;
     Builtin b(s);
+    Eval ev(s, n);
 
     REQUIRE(s.get("/") != nullptr);
     Value *v1 = new FloatValue(10);
     Value *v2 = new IntValue(0);
     v1->addLast(v2);
-    REQUIRE_THROWS(s.get("/")(v1, v2, &n));
+    REQUIRE_THROWS(s.get("/")(v1, v2, &ev, &n));
 }
 
 TEST_CASE("Test div by zero", "[builtin]") {
     Symbols s;
     Env n;
     Builtin b(s);
+    Eval ev(s, n);
 
     REQUIRE(s.get("/") != nullptr);
     Value *v1 = new IntValue(10);
     Value *v2 = new IntValue(0);
     v1->addLast(v2);
-    REQUIRE_THROWS(s.get("/")(v1, v2, &n));
+    REQUIRE_THROWS(s.get("/")(v1, v2, &ev, &n));
 }
 
 TEST_CASE("Test def!", "[builtin]") {
     Symbols s;
     Env n;
     Builtin b(s);
+    Eval ev(s, n);
 
     REQUIRE(s.get("def!")!= nullptr);
     Value *v1 = new SymbolValue("a");
     Value *v2 = new IntValue(6);
-    REQUIRE(s.get("def!")(v1, v2, &n) == v2);
+    REQUIRE(s.get("def!")(v1, v2, &ev, &n) == v2);
 
     REQUIRE(n.get("a") != nullptr);
     REQUIRE(n.get("a") == v2);
@@ -256,6 +272,7 @@ TEST_CASE("Test simple let*", "[builtin]") {
     Symbols s;
     Env n;
     Builtin b(s);
+    Eval ev(s, n);
 
     REQUIRE(s.get("let*")!= nullptr);
     Value *v1_1 = new SymbolValue("a");
@@ -264,7 +281,7 @@ TEST_CASE("Test simple let*", "[builtin]") {
     Value *v1 = new ListValue(v1_1);
 
     Value *v2 = new SymbolValue("a");
-    Value *res = s.get("let*")(v1, v2, &n);
+    Value *res = s.get("let*")(v1, v2, &ev, &n);
     REQUIRE(res != nullptr);
     REQUIRE(res->type() == Type::Int);
     REQUIRE(toInt(res)->value() == 2);
@@ -274,6 +291,7 @@ TEST_CASE("Test list let*", "[builtin]") {
     Symbols s;
     Env n;
     Builtin b(s);
+    Eval ev(s, n);
 
     /*
      (let*
@@ -303,7 +321,7 @@ TEST_CASE("Test list let*", "[builtin]") {
     v4_1->addLast(v4_3);
     Value *v4 = new ListValue(v4_1);
 
-    Value *res = s.get("let*")(v3, v4, &n);
+    Value *res = s.get("let*")(v3, v4, &ev, &n);
     REQUIRE(res != nullptr);
     REQUIRE(res->type() == Type::Int);
     REQUIRE(toInt(res)->value() == 9);

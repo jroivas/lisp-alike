@@ -1,5 +1,4 @@
 #include "symbols.hh"
-#include <iostream>
 
 void Symbols::registerSymbol(std::string name, Handler h)
 {

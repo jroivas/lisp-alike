@@ -25,18 +25,14 @@ double getDoubleNumber(Value *v)
     return 0;
 }
 
-Value *Builtin::plus(Value *a, Value *b, Env *n)
+Value *Builtin::plus(Value *a, Value *b, Eval *ev, Env *n)
 {
+    a = ev->evalValue(a);
+    b = ev->evalValue(b);
+
     if (a == nullptr && b == nullptr) return nullptr;
     if (a == nullptr) return b;
     if (b == nullptr) return a;
-
-    Symbols s;
-    Builtin bin(s);
-    Eval e(s, *n);
-
-    a = e.evalValue(a);
-    b = e.evalValue(b);
 
     if (a->type() == Type::Float ||
         b->type() == Type::Float) {
@@ -46,8 +42,11 @@ Value *Builtin::plus(Value *a, Value *b, Env *n)
     return new IntValue(toInt(a)->value() + toInt(b)->value());
 }
 
-Value *Builtin::minus(Value *a, Value *b, Env *e)
+Value *Builtin::minus(Value *a, Value *b, Eval *ev, Env *e)
 {
+    a = ev->evalValue(a);
+    b = ev->evalValue(b);
+
     if (a == nullptr && b == nullptr) return nullptr;
     if (a == nullptr) return b;
     if (b == nullptr) return a;
@@ -60,8 +59,11 @@ Value *Builtin::minus(Value *a, Value *b, Env *e)
     return new IntValue(toInt(a)->value() - toInt(b)->value());
 }
 
-Value *Builtin::mul(Value *a, Value *b, Env *e)
+Value *Builtin::mul(Value *a, Value *b, Eval *ev, Env *e)
 {
+    a = ev->evalValue(a);
+    b = ev->evalValue(b);
+
     if (a == nullptr && b == nullptr) return nullptr;
     if (a == nullptr) return b;
     if (b == nullptr) return a;
@@ -74,8 +76,11 @@ Value *Builtin::mul(Value *a, Value *b, Env *e)
     return new IntValue(toInt(a)->value() * toInt(b)->value());
 }
 
-Value *Builtin::div(Value *a, Value *b, Env *e)
+Value *Builtin::div(Value *a, Value *b, Eval *ev, Env *e)
 {
+    a = ev->evalValue(a);
+    b = ev->evalValue(b);
+
     if (a == nullptr && b == nullptr) return nullptr;
     if (a == nullptr) return b;
     if (b == nullptr) return a;
@@ -91,8 +96,11 @@ Value *Builtin::div(Value *a, Value *b, Env *e)
     return new IntValue(toInt(a)->value() / div);
 }
 
-Value *Builtin::def(Value *a, Value *b, Env *e)
+Value *Builtin::def(Value *a, Value *b, Eval *ev, Env *e)
 {
+    a = ev->evalValue(a);
+    b = ev->evalValue(b);
+
     if (a == nullptr) return nullptr;
     if (a->type() != Type::Symbol) return nullptr;
 
@@ -120,7 +128,7 @@ static bool evalList(Value *a, Eval *e, Env *evalEnv)
     return evalListItem(item, e, evalEnv);
 }
 
-Value *Builtin::let_star(Value *a, Value *b, Env *n)
+Value *Builtin::let_star(Value *a, Value *b, Eval *ev, Env *n)
 {
     if (a->type() != Type::List) {
         // Force wrap to list
