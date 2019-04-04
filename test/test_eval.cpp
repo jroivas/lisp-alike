@@ -11,9 +11,9 @@ TEST_CASE("Eval empty", "[eval]") {
     Parse p(t);
     Symbols s;
     Env n;
-    Eval e(p, s, n);
+    Eval e(s, n);
 
-    Value *v = e.eval();
+    Value *v = e.eval(p);
     REQUIRE(v == nullptr);
 }
 
@@ -22,9 +22,9 @@ TEST_CASE("Eval number", "[eval]") {
     Parse p(t);
     Symbols s;
     Env n;
-    Eval e(p, s, n);
+    Eval e(s, n);
 
-    Value *v = e.eval();
+    Value *v = e.eval(p);
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Int);
     REQUIRE(toInt(v)->value() == 42);
@@ -35,9 +35,9 @@ TEST_CASE("Eval string", "[eval]") {
     Parse p(t);
     Symbols s;
     Env n;
-    Eval e(p, s, n);
+    Eval e(s, n);
 
-    Value *v = e.eval();
+    Value *v = e.eval(p);
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::String);
     REQUIRE(toString(v)->value() == "42");
@@ -49,9 +49,9 @@ TEST_CASE("Eval plus", "[eval]") {
     Symbols s;
     Builtin b(s);
     Env n;
-    Eval e(p, s, n);
+    Eval e(s, n);
 
-    Value *v = e.eval();
+    Value *v = e.eval(p);
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Int);
     REQUIRE(toInt(v)->value() == 3);
@@ -63,9 +63,9 @@ TEST_CASE("Eval plus many", "[eval]") {
     Symbols s;
     Builtin b(s);
     Env n;
-    Eval e(p, s, n);
+    Eval e(s, n);
 
-    Value *v = e.eval();
+    Value *v = e.eval(p);
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Int);
     REQUIRE(toInt(v)->value() == 6);
@@ -77,9 +77,9 @@ TEST_CASE("Eval inside lists", "[eval]") {
     Symbols s;
     Builtin b(s);
     Env n;
-    Eval e(p, s, n);
+    Eval e(s, n);
 
-    Value *v = e.eval();
+    Value *v = e.eval(p);
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Int);
     REQUIRE(toInt(v)->value() == 7);
@@ -91,9 +91,9 @@ TEST_CASE("Eval inside lists first", "[eval]") {
     Symbols s;
     Builtin b(s);
     Env n;
-    Eval e(p, s, n);
+    Eval e(s, n);
 
-    Value *v = e.eval();
+    Value *v = e.eval(p);
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Int);
     REQUIRE(toInt(v)->value() == 11);
@@ -109,11 +109,39 @@ TEST_CASE("Eval define and val", "[eval]") {
     Builtin b(s);
     Env n;
 
-    Eval e1(p1, s, n);
-    e1.eval();
+    Eval e1(s, n);
+    e1.eval(p1);
 
-    Eval e2(p2, s, n);
-    Value *v = e2.eval();
+    Eval e2(s, n);
+    Value *v = e2.eval(p2);
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Int);
+}
+
+TEST_CASE("Eval let* simple", "[eval]") {
+    Tokenize t("(let* (a 5) a)");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v = e.eval(p);
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 5);
+}
+
+TEST_CASE("Eval let* complex", "[eval]") {
+    Tokenize t("(let* ((a 5) (b 37)) (+ a b))");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v = e.eval(p);
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 42);
 }

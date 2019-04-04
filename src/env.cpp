@@ -15,3 +15,11 @@ Value *Env::get(std::string key)
 
     return item->second;
 }
+
+Value *Env::handleSymbol(Value *v)
+{
+    if (v->type() != Type::Symbol) return v;
+    Value *tmp = get(toSymbol(v)->value());
+    if (tmp != nullptr) return tmp;
+    return v;
+}

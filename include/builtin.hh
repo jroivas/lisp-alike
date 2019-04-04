@@ -18,4 +18,5 @@ private:
     static Value *mul(Value *a, Value *b, Env *n);
     static Value *div(Value *a, Value *b, Env *n);
     static Value *def(Value *a, Value *b, Env *n);
+    static Value *let_star(Value *a, Value *b, Env *n);
 };

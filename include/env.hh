@@ -12,6 +12,7 @@ public:
 
     void set(std::string key, Value *v);
     Value *get(std::string key);
+    Value *handleSymbol(Value *v);
 
 private:
     Env *next;

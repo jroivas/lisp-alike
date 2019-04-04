@@ -251,3 +251,60 @@ TEST_CASE("Test def!", "[builtin]") {
     REQUIRE(n.get("a") != nullptr);
     REQUIRE(n.get("a") == v2);
 }
+
+TEST_CASE("Test simple let*", "[builtin]") {
+    Symbols s;
+    Env n;
+    Builtin b(s);
+
+    REQUIRE(s.get("let*")!= nullptr);
+    Value *v1_1 = new SymbolValue("a");
+    Value *v1_2 = new IntValue(2);
+    v1_1->addLast(v1_2);
+    Value *v1 = new ListValue(v1_1);
+
+    Value *v2 = new SymbolValue("a");
+    Value *res = s.get("let*")(v1, v2, &n);
+    REQUIRE(res != nullptr);
+    REQUIRE(res->type() == Type::Int);
+    REQUIRE(toInt(res)->value() == 2);
+}
+
+TEST_CASE("Test list let*", "[builtin]") {
+    Symbols s;
+    Env n;
+    Builtin b(s);
+
+    /*
+     (let*
+        ((a 2)
+         (b 7))
+         (+ a b)
+     )
+     */
+    REQUIRE(s.get("let*")!= nullptr);
+    Value *v1_1 = new SymbolValue("a");
+    Value *v1_2 = new IntValue(2);
+    v1_1->addLast(v1_2);
+
+    Value *v2_1 = new SymbolValue("b");
+    Value *v2_2 = new IntValue(7);
+    v2_1->addLast(v2_2);
+
+    Value *v1 = new ListValue(v1_1);
+    Value *v2 = new ListValue(v2_1);
+    v1->addLast(v2);
+    Value *v3 = new ListValue(v1);
+
+    Value *v4_1 = new SymbolValue("+");
+    Value *v4_2 = new SymbolValue("a");
+    Value *v4_3 = new SymbolValue("b");
+    v4_1->addLast(v4_2);
+    v4_1->addLast(v4_3);
+    Value *v4 = new ListValue(v4_1);
+
+    Value *res = s.get("let*")(v3, v4, &n);
+    REQUIRE(res != nullptr);
+    REQUIRE(res->type() == Type::Int);
+    REQUIRE(toInt(res)->value() == 9);
+}

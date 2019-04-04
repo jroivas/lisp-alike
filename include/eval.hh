@@ -8,15 +8,14 @@
 class Eval
 {
 public:
-    Eval(Parse &p, Symbols &s, Env &e);
-    Value *eval();
+    Eval(Symbols &s, Env &e);
+    Value *eval(Parse &p);
+    Value *evalValue(Value *v);
 
 private:
-    Value *evalValue(Value *v);
     Value *evalList(ListValue *list);
     Value *evalSymbol(SymbolValue *symbol);
 
-    Parse &parse;
     Symbols &symbols;
     Env &env;
 };

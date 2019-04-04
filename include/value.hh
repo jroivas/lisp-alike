@@ -51,6 +51,7 @@ private:
     Value *next;
 };
 
+std::string typeStr(Type t);
 std::string boolToString(bool v);
 std::string listToString(Value *v);
 
@@ -67,7 +68,9 @@ private:\
     t _value;\
 };\
 static inline x ## Value* to##x(Value *val) {\
-    if (val->type() != y) ERROR("Type mismatch!");\
+    if (val->type() != y)\
+        ERROR("Type mismatch: got " + typeStr(val->type()) \
+                + " excpected: " + typeStr(y));\
     return static_cast<x ## Value*>(val); \
 }
 

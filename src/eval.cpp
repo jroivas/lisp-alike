@@ -1,12 +1,12 @@
 #include "eval.hh"
 #include "builtin.hh"
 
-Eval::Eval(Parse &p, Symbols &s, Env &e) :
-    parse(p), symbols(s), env(e)
+Eval::Eval(Symbols &s, Env &e) :
+    symbols(s), env(e)
 {
 }
 
-Value *Eval::eval()
+Value *Eval::eval(Parse &parse)
 {
     return evalValue(parse.readForm());
 }
@@ -27,18 +27,18 @@ Value *Eval::evalValue(Value *v)
 Value *Eval::evalSymbol(SymbolValue *symbol)
 {
     std::string val = symbol->value();
-    auto h = symbols.get(val);
-    if (h == nullptr) {
+    auto handler = symbols.get(val);
+    if (handler == nullptr) {
         Value *v = env.get(val);
         if (v != nullptr) return v;
         return symbol;
     }
 
-    Value *res = evalValue(symbol->cdr());
+    Value *res = symbol->cdr();
     Value *b = symbol->cdr();
     while (b != nullptr && b->cdr() != nullptr) {
-        b = evalValue(b->cdr());
-        res = h(res, b, &env);
+        b = b->cdr();
+        res = handler(res, b, &env);
     }
     return res;
 }

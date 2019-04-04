@@ -25,10 +25,11 @@ int repl()
         try {
             Tokenize tok(line);
             Parse p(tok);
-            Eval e(p, s, env);
-            Value *ev = e.eval();
+            Eval e(s, env);
+            Value *ev = e.eval(p);
             if (ev != nullptr)
                 std::cout << ev->toString() << "\n";
+            else std::cout << "nil\n";
         }
         catch (std::string s) {
             std::cerr << s << "\n";
