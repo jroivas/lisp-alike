@@ -187,3 +187,31 @@ TEST_CASE("Eval if nil false", "[eval]") {
     REQUIRE(v->type() == Type::Int);
     REQUIRE(toInt(v)->value() == 10);
 }
+
+TEST_CASE("Eval do list", "[eval]") {
+    Tokenize t("(do (nil (+ 2 5) (* 2 5)) 4)");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v = e.eval(p);
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 4);
+}
+
+TEST_CASE("Eval do with let", "[eval]") {
+    Tokenize t("(do (def! x 5) (def! y 2) (+ x y))");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v = e.eval(p);
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 7);
+}

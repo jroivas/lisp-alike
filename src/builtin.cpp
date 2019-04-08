@@ -175,13 +175,11 @@ Value *Builtin::if_kw(Value *a, Value *b, Eval *ev, Env *n)
 
 Value *Builtin::do_kw(Value *a, Value *b, Eval *ev, Env *n)
 {
-    // FIXME Supports only lists
-    Value *v = ev->evalValue(a)->clone();
-    Value *res = new ListValue(v);
+    Value *res = ev->evalValue(a);
 
     while (b != nullptr) {
         Value *next = b->cdr();
-        v->addLast(ev->evalValue(b)->clone());
+        res = ev->evalValue(b);
         b = next;
     }
     return res;

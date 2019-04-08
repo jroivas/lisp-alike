@@ -383,20 +383,6 @@ TEST_CASE("Test do eval", "[builtin]") {
 
     Value *res = s.get("do")(test, v1, &ev, &n);
     REQUIRE(res != nullptr);
-    REQUIRE(res->type() == Type::List);
-
-    Value *v = toList(res)->value();
-    REQUIRE(v != nullptr);
-    REQUIRE(v->type() == Type::Bool);
-    REQUIRE(toBool(v)->value() == false);
-
-    v = v->cdr();
-    REQUIRE(v != nullptr);
-    REQUIRE(v->type() == Type::Int);
-    REQUIRE(toInt(v)->value() == 42);
-
-    v = v->cdr();
-    REQUIRE(v != nullptr);
-    REQUIRE(v->type() == Type::Int);
-    REQUIRE(toInt(v)->value() == 666);
+    REQUIRE(res->type() == Type::Int);
+    REQUIRE(toInt(res)->value() == 666);
 }
