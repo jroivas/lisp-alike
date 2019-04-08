@@ -189,7 +189,7 @@ TEST_CASE("Eval if nil false", "[eval]") {
 }
 
 TEST_CASE("Eval do list", "[eval]") {
-    Tokenize t("(do (nil (+ 2 5) (* 2 5)) 4)");
+    Tokenize t("(do (+ 2 5) (* 2 5) 4)");
     Parse p(t);
     Symbols s;
     Builtin b(s);
@@ -214,4 +214,43 @@ TEST_CASE("Eval do with let", "[eval]") {
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Int);
     REQUIRE(toInt(v)->value() == 7);
+}
+
+TEST_CASE("Eval list fail", "[eval]") {
+    Tokenize t("(1 2 3)");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    REQUIRE_THROWS(e.eval(p));
+}
+
+TEST_CASE("Eval simple vector", "[eval]") {
+    Tokenize t("[1 2 8]");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v = e.eval(p);
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Vector);
+
+    v = toVector(v)->value();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 1);
+
+    v = v->cdr();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 2);
+
+    v = v->cdr();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 8);
 }

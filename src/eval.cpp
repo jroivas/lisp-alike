@@ -49,8 +49,8 @@ Value *Eval::evalList(ListValue *list)
 {
     Value *v = list->value();
     if (v == nullptr) return list;
-    if (v->type() == Type::Symbol)
-        return evalSymbol(toSymbol(v));
+    if (v->type() != Type::Symbol)
+        ERROR("Not applicable: " + v->toString());
 
-    return v;
+    return evalSymbol(toSymbol(v));
 }
