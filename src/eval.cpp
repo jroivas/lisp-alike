@@ -15,13 +15,12 @@ Value *Eval::evalValue(Value *v)
 {
     if (v == nullptr) return nullptr;
 
-    if (v->type() == Type::List)
-        return evalList(toList(v));
-
-    if (v->type() == Type::Symbol)
-        return evalSymbol(toSymbol(v));
-
-    return v;
+    switch (v->type()) {
+        case Type::List: return evalList(toList(v));
+        case Type::Vector: return evalVector(toVector(v));
+        case Type::Symbol: return evalSymbol(toSymbol(v));
+        default: return v;
+    }
 }
 
 Value *Eval::evalSymbol(SymbolValue *symbol)
@@ -53,4 +52,19 @@ Value *Eval::evalList(ListValue *list)
         ERROR("Not applicable: " + v->toString());
 
     return evalSymbol(toSymbol(v));
+}
+
+Value *Eval::evalVector(VectorValue *list)
+{
+    Value *v = list->value();
+    Value *res = nullptr;
+    while (v != nullptr) {
+        Value *next = v->cdr();
+        Value *tmp = evalValue(v->clone());
+        if (res == nullptr) res = tmp;
+        else res->addLast(tmp);
+        v = next;
+    }
+
+    return new VectorValue(res);
 }

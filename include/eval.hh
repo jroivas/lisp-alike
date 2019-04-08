@@ -14,6 +14,7 @@ public:
 
 private:
     Value *evalList(ListValue *list);
+    Value *evalVector(VectorValue *vector);
     Value *evalSymbol(SymbolValue *symbol);
 
     Symbols &symbols;

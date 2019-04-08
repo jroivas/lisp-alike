@@ -8,7 +8,7 @@ std::string listyToString(Value *v, char s, char e) {
     std::string res;
     res += s;
     while (v != nullptr) {
-        if (!res.empty() && res[res.length() - 1] != '(')
+        if (!res.empty() && res[res.length() - 1] != s)
             res += " ";
         res += v->toString();
         v = v->cdr();

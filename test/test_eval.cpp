@@ -254,3 +254,31 @@ TEST_CASE("Eval simple vector", "[eval]") {
     REQUIRE(v->type() == Type::Int);
     REQUIRE(toInt(v)->value() == 8);
 }
+
+TEST_CASE("Eval complex vector", "[eval]") {
+    Tokenize t(" [1 (+ 2 4) 8]");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v = e.eval(p);
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Vector);
+
+    v = toVector(v)->value();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 1);
+
+    v = v->cdr();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 6);
+
+    v = v->cdr();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 8);
+}
