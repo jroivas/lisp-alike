@@ -188,5 +188,5 @@ Value *Builtin::do_kw(Value *a, Value *b, Eval *ev, Env *n)
 
 Value *Builtin::fn_star(Value *a, Value *b, Eval *ev, Env *n)
 {
-    return nullptr;
+    return new FunctionValue();
 }

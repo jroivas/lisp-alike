@@ -387,15 +387,18 @@ TEST_CASE("Test do eval", "[builtin]") {
     REQUIRE(toInt(res)->value() == 666);
 }
 
-#if 0
 TEST_CASE("Test simple fn", "[builtin]") {
     Symbols s;
     Env n;
     Builtin b(s);
     Eval ev(s, n);
 
+    Value *v1 = new IntValue(42);
+    Value *v2 = new SymbolValue("a");
+
     REQUIRE(s.get("fn*")!= nullptr);
 
-    Value *res = s.get("fn")(test, v1, &ev, &n);
+    Value *res = s.get("fn*")(v1, v2, &ev, &n);
+    REQUIRE(res != nullptr);
+    REQUIRE(res->type() == Type::Function);
 }
-#endif

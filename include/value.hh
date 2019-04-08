@@ -106,7 +106,7 @@ class FunctionValue : public Value
 public:
     FunctionValue() : Value(Type::Function) {}
     Value *value() { return nullptr; }
-    std::string toString() const { return "nil"; }
+    std::string toString() const { return "#function"; }
     Value *clone() const { return new FunctionValue(); }
 };
 ValueConv(Function, Type::Function)
