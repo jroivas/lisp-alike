@@ -27,6 +27,7 @@ std::string typeStr(Type t)
         case Type::Nil: return "Nil";
         case Type::Bool: return "Bool";
         case Type::List: return "List";
+        case Type::Function: return "Function";
         default: return "<INVALID>";
     };
 }

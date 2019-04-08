@@ -22,4 +22,5 @@ private:
     static Value *let_star(Value *a, Value *b, Eval *ev, Env *n);
     static Value *if_kw(Value *a, Value *b, Eval *ev, Env *n);
     static Value *do_kw(Value *a, Value *b, Eval *ev, Env *n);
+    static Value *fn_star(Value *a, Value *b, Eval *ev, Env *n);
 };

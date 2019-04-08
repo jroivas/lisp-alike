@@ -11,7 +11,8 @@ enum class Type {
     Symbol,
     Nil,
     Bool,
-    List
+    List,
+    Function
 };
 
 class Value
@@ -58,6 +59,14 @@ std::string typeStr(Type t);
 std::string boolToString(bool v);
 std::string listToString(Value *v);
 
+#define ValueConv(x, y)\
+static inline x ## Value* to##x(Value *val) {\
+    if (val->type() != y)\
+        ERROR("Type mismatch: got " + typeStr(val->type()) \
+                + " excpected: " + typeStr(y));\
+    return static_cast<x ## Value*>(val); \
+}
+
 #define ValueDef(x, y, t, s)\
 class x ## Value : public Value\
 {\
@@ -73,12 +82,7 @@ public:\
 private:\
     t _value;\
 };\
-static inline x ## Value* to##x(Value *val) {\
-    if (val->type() != y)\
-        ERROR("Type mismatch: got " + typeStr(val->type()) \
-                + " excpected: " + typeStr(y));\
-    return static_cast<x ## Value*>(val); \
-}
+ValueConv(x, y)
 
 ValueDef(String, Type::String, std::string, )
 ValueDef(Symbol, Type::Symbol, std::string, )
@@ -95,7 +99,14 @@ public:
     std::string toString() const { return "nil"; }
     Value *clone() const { return new NilValue(); }
 };
-static inline NilValue *toNil(Value *val) {
-    if (val->type() != Type::Nil) ERROR("Type mismatch!");
-    return static_cast<NilValue*>(val);
-}
+ValueConv(Nil, Type::Nil)
+
+class FunctionValue : public Value
+{
+public:
+    FunctionValue() : Value(Type::Function) {}
+    Value *value() { return nullptr; }
+    std::string toString() const { return "nil"; }
+    Value *clone() const { return new FunctionValue(); }
+};
+ValueConv(Function, Type::Function)

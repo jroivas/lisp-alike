@@ -17,6 +17,7 @@ void Builtin::init()
     symbols.registerSymbol("let*", this->let_star, false);
     symbols.registerSymbol("if", this->if_kw, false);
     symbols.registerSymbol("do", this->do_kw, false);
+    symbols.registerSymbol("fn*", this->fn_star, false);
 }
 
 double getDoubleNumber(Value *v)
@@ -183,4 +184,9 @@ Value *Builtin::do_kw(Value *a, Value *b, Eval *ev, Env *n)
         b = next;
     }
     return res;
+}
+
+Value *Builtin::fn_star(Value *a, Value *b, Eval *ev, Env *n)
+{
+    return nullptr;
 }
