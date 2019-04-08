@@ -19,7 +19,8 @@ Value *Eval::evalValue(Value *v)
         case Type::List: return evalList(toList(v));
         case Type::Vector: return evalVector(toVector(v));
         case Type::Symbol: return evalSymbol(toSymbol(v));
-        case Type::Function: return evalFunction(toFunction(v));
+        case Type::Function:
+            return evalFunction(toFunction(v), v->cdr());
         default: return v;
     }
 }
@@ -55,7 +56,7 @@ Value *Eval::evalList(ListValue *list)
 
     Value *v2 = evalValue(v);
     if (v2 != nullptr && v2->type() == Type::Function)
-        return evalFunction(toFunction(v2));
+        return evalFunction(toFunction(v2), v->cdr());
 
     ERROR("Not applicable: " + v->toString());
 }
@@ -75,7 +76,18 @@ Value *Eval::evalVector(VectorValue *list)
     return new VectorValue(res);
 }
 
-Value *Eval::evalFunction(FunctionValue *function)
+Value *Eval::evalFunction(FunctionValue *function, Value *n)
 {
+    Env *fnEnv = new Env();
+    Value *bind = function->params();
+    Value *v = nullptr;
+    while ((v = iterValue(bind, v)) != nullptr) {
+        if (v->type() != Type::Symbol)
+            ERROR("Expected symbol!")
+        std::string s = toSymbol(v)->value();
+        fnEnv->set(s, n);
+        if (n != nullptr) n = n->cdr();
+    }
+
     return nullptr;
 }

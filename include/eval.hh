@@ -16,7 +16,7 @@ private:
     Value *evalList(ListValue *list);
     Value *evalVector(VectorValue *vector);
     Value *evalSymbol(SymbolValue *symbol);
-    Value *evalFunction(FunctionValue *func);
+    Value *evalFunction(FunctionValue *func, Value *n);
 
     Symbols &symbols;
     Env &env;

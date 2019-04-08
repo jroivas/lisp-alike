@@ -109,12 +109,30 @@ public:
 };
 ValueConv(Nil, Type::Nil)
 
+class Env;
 class FunctionValue : public Value
 {
 public:
-    FunctionValue() : Value(Type::Function) {}
-    Value *value() { return nullptr; }
+    FunctionValue(Value *a, Value *b) :
+        Value(Type::Function), bind(a), body(b) {}
+    Value *params() { return bind; }
+    Value *value() { return body; }
     std::string toString() const { return "#function"; }
-    Value *clone() const { return new FunctionValue(); }
+    Value *clone() const { return new FunctionValue(bind, body); }
+
+private:
+    Value *bind;
+    Value *body;
 };
 ValueConv(Function, Type::Function)
+
+inline Value *iterValue(Value *o, Value *v) {
+    if (o->type() != Type::List && o->type() != Type::Vector)
+        FATAL("Invalid iterator");
+    if (v == nullptr) {
+        v = o->type() == Type::List
+            ? toList(o)->value()
+            : toVector(o)->value();
+    }
+    return v->cdr();
+}
