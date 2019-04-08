@@ -282,3 +282,16 @@ TEST_CASE("Eval complex vector", "[eval]") {
     REQUIRE(v->type() == Type::Int);
     REQUIRE(toInt(v)->value() == 8);
 }
+
+TEST_CASE("Eval simple fn!", "[eval]") {
+    Tokenize t("(fn* [a] a)");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v = e.eval(p);
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Function);
+}

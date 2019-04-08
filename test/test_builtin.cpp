@@ -393,7 +393,8 @@ TEST_CASE("Test simple fn", "[builtin]") {
     Builtin b(s);
     Eval ev(s, n);
 
-    Value *v1 = new IntValue(42);
+    Value *v1_1 = new SymbolValue("a");
+    Value *v1 = new VectorValue(v1_1);
     Value *v2 = new SymbolValue("a");
 
     REQUIRE(s.get("fn*")!= nullptr);
