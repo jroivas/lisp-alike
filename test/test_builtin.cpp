@@ -326,3 +326,43 @@ TEST_CASE("Test list let*", "[builtin]") {
     REQUIRE(res->type() == Type::Int);
     REQUIRE(toInt(res)->value() == 9);
 }
+
+TEST_CASE("Test if true", "[builtin]") {
+    Symbols s;
+    Env n;
+    Builtin b(s);
+    Eval ev(s, n);
+
+    Value *v1 = new IntValue(42);
+    Value *v2 = new IntValue(666);
+    Value *test = new BoolValue(true);
+    test->addLast(v1);
+    test->addLast(v2);
+
+    REQUIRE(s.get("if")!= nullptr);
+
+    Value *res = s.get("if")(test, v1, &ev, &n);
+    REQUIRE(res != nullptr);
+    REQUIRE(res->type() == Type::Int);
+    REQUIRE(toInt(res)->value() == 42);
+}
+
+TEST_CASE("Test if false", "[builtin]") {
+    Symbols s;
+    Env n;
+    Builtin b(s);
+    Eval ev(s, n);
+
+    Value *v1 = new IntValue(42);
+    Value *v2 = new IntValue(666);
+    Value *test = new BoolValue(false);
+    test->addLast(v1);
+    test->addLast(v2);
+
+    REQUIRE(s.get("if")!= nullptr);
+
+    Value *res = s.get("if")(test, v1, &ev, &n);
+    REQUIRE(res != nullptr);
+    REQUIRE(res->type() == Type::Int);
+    REQUIRE(toInt(res)->value() == 666);
+}

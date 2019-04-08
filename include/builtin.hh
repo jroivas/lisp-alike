@@ -20,4 +20,5 @@ private:
     static Value *div(Value *a, Value *b, Eval *ev, Env *n);
     static Value *def(Value *a, Value *b, Eval *ev, Env *n);
     static Value *let_star(Value *a, Value *b, Eval *ev, Env *n);
+    static Value *if_kw(Value *a, Value *b, Eval *ev, Env *n);
 };

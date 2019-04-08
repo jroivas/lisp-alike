@@ -13,8 +13,9 @@ void Builtin::init()
     symbols.registerSymbol("-", this->minus);
     symbols.registerSymbol("*", this->mul);
     symbols.registerSymbol("/", this->div);
-    symbols.registerSymbol("def!", this->def);
-    symbols.registerSymbol("let*", this->let_star);
+    symbols.registerSymbol("def!", this->def, false);
+    symbols.registerSymbol("let*", this->let_star, false);
+    symbols.registerSymbol("if", this->if_kw, false);
 }
 
 double getDoubleNumber(Value *v)
@@ -151,4 +152,24 @@ Value *Builtin::let_star(Value *a, Value *b, Eval *ev, Env *n)
     }
 
     return e.evalValue(b);
+}
+
+#include <iostream>
+bool isTruth(Value *v)
+{
+    std::cout << "VV " << (int)v->type() << "\n";
+    switch (v->type()) {
+        case Type::Bool: return toBool(v)->value();
+        case Type::Nil: return false;
+        default: return true;
+    }
+}
+
+Value *Builtin::if_kw(Value *a, Value *b, Eval *ev, Env *n)
+{
+    a = ev->evalValue(a);
+
+    if (isTruth(a)) return ev->evalValue(b);
+
+    return ev->evalValue(b->cdr());
 }

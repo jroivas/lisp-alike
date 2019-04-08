@@ -27,18 +27,20 @@ Value *Eval::evalValue(Value *v)
 Value *Eval::evalSymbol(SymbolValue *symbol)
 {
     std::string val = symbol->value();
-    auto handler = symbols.get(val);
-    if (handler == nullptr) {
+    auto symbolData = symbols.getSymbol(val);
+    if (symbolData == nullptr) {
         Value *v = env.get(val);
         if (v != nullptr) return v;
         return symbol;
     }
+    auto handler = symbolData->handler;
 
     Value *res = symbol->cdr();
     Value *b = symbol->cdr();
     while (b != nullptr && b->cdr() != nullptr) {
         b = b->cdr();
         res = handler(res, b, this, &env);
+        if (!symbolData->recurse) break;
     }
     return res;
 }
