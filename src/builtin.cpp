@@ -16,6 +16,7 @@ void Builtin::init()
     symbols.registerSymbol("def!", this->def, false);
     symbols.registerSymbol("let*", this->let_star, false);
     symbols.registerSymbol("if", this->if_kw, false);
+    symbols.registerSymbol("do", this->do_kw, false);
 }
 
 double getDoubleNumber(Value *v)
@@ -170,4 +171,18 @@ Value *Builtin::if_kw(Value *a, Value *b, Eval *ev, Env *n)
     if (isTruth(a)) return ev->evalValue(b);
 
     return ev->evalValue(b->cdr());
+}
+
+Value *Builtin::do_kw(Value *a, Value *b, Eval *ev, Env *n)
+{
+    // FIXME Supports only lists
+    Value *v = ev->evalValue(a)->clone();
+    Value *res = new ListValue(v);
+
+    while (b != nullptr) {
+        Value *next = b->cdr();
+        v->addLast(ev->evalValue(b)->clone());
+        b = next;
+    }
+    return res;
 }

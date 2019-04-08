@@ -41,6 +41,9 @@ public:
     virtual std::string toString() const {
         return "<INVALID>";
     }
+    virtual Value* clone() const {
+        return new Value(valueType);
+    }
 
 protected:
     Value(Type t) : valueType(t), next(nullptr) {}
@@ -63,6 +66,9 @@ public:\
     t value() { return _value; } \
     virtual std::string toString() const {\
         return s(_value);\
+    }\
+    virtual Value* clone() const {\
+        return new x ## Value(_value);\
     }\
 private:\
     t _value;\
@@ -87,6 +93,7 @@ public:
     NilValue() : Value(Type::Nil) {}
     Value *value() { return nullptr; }
     std::string toString() const { return "nil"; }
+    Value *clone() const { return new NilValue(); }
 };
 static inline NilValue *toNil(Value *val) {
     if (val->type() != Type::Nil) ERROR("Type mismatch!");

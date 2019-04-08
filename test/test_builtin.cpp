@@ -366,3 +366,37 @@ TEST_CASE("Test if false", "[builtin]") {
     REQUIRE(res->type() == Type::Int);
     REQUIRE(toInt(res)->value() == 666);
 }
+
+TEST_CASE("Test do eval", "[builtin]") {
+    Symbols s;
+    Env n;
+    Builtin b(s);
+    Eval ev(s, n);
+
+    Value *v1 = new IntValue(42);
+    Value *v2 = new IntValue(666);
+    Value *test = new BoolValue(false);
+    test->addLast(v1);
+    test->addLast(v2);
+
+    REQUIRE(s.get("do")!= nullptr);
+
+    Value *res = s.get("do")(test, v1, &ev, &n);
+    REQUIRE(res != nullptr);
+    REQUIRE(res->type() == Type::List);
+
+    Value *v = toList(res)->value();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Bool);
+    REQUIRE(toBool(v)->value() == false);
+
+    v = v->cdr();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 42);
+
+    v = v->cdr();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 666);
+}
