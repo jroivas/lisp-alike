@@ -12,6 +12,7 @@ enum class Type {
     Nil,
     Bool,
     List,
+    Vector,
     Function
 };
 
@@ -57,7 +58,13 @@ private:
 
 std::string typeStr(Type t);
 std::string boolToString(bool v);
-std::string listToString(Value *v);
+std::string listyToString(Value *v, char s, char e);
+inline std::string listToString(Value *v) {
+    return listyToString(v, '(', ')');
+}
+inline std::string vectorToString(Value *v) {
+    return listyToString(v, '[', ']');
+}
 
 #define ValueConv(x, y)\
 static inline x ## Value* to##x(Value *val) {\
@@ -90,6 +97,7 @@ ValueDef(Bool, Type::Bool, bool, boolToString)
 ValueDef(Int, Type::Int, long long int, std::to_string)
 ValueDef(Float, Type::Float, double, std::to_string)
 ValueDef(List, Type::List, Value *, listToString)
+ValueDef(Vector, Type::Vector, Value *, vectorToString)
 
 class NilValue : public Value
 {

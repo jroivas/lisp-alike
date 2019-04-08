@@ -266,3 +266,22 @@ TEST_CASE("Handle unbalanced list error inside list", "[parse]") {
 
     REQUIRE_THROWS(p.readForm());
 }
+
+TEST_CASE("Parse vector", "[parse]") {
+    Tokenize t("[1 2]");
+    Parse p(t);
+
+    Value *v = p.readForm();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Vector);
+    REQUIRE(v->cdr() == nullptr);
+
+    v = toVector(v)->value();
+    REQUIRE(v != nullptr);
+    REQUIRE(toInt(v)->value() == 1);
+
+    v = v->cdr();
+    REQUIRE(v != nullptr);
+    REQUIRE(toInt(v)->value() == 2);
+    REQUIRE(v->cdr() == nullptr);
+}

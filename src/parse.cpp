@@ -13,6 +13,10 @@ Value *Parse::readForm()
         tokenize.next();
         return readList(")");
     }
+    if (token == "[") {
+        tokenize.next();
+        return readList("]");
+    }
     return readAtom();
 }
 
@@ -86,6 +90,7 @@ Value *Parse::readList(std::string endMark)
     if (end != endMark)
         PARSE_ERROR("Missing: " + endMark)
 
-    current = new ListValue(first);
+    if (endMark == "]") current = new VectorValue(first);
+    else current = new ListValue(first);
     return current;
 }

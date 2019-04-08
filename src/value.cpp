@@ -4,16 +4,16 @@ std::string boolToString(bool v) {
     return v ? "true" : "false";
 }
 
-std::string listToString(Value *v) {
-    std::string res = "(";
+std::string listyToString(Value *v, char s, char e) {
+    std::string res;
+    res += s;
     while (v != nullptr) {
         if (!res.empty() && res[res.length() - 1] != '(')
             res += " ";
         res += v->toString();
         v = v->cdr();
     }
-    res += ")";
-    return res;
+    return res + e;
 }
 
 std::string typeStr(Type t)
