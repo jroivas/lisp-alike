@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <unistd.h>
 
 #include "history.hh"
 #include "tokenize.hh"
@@ -10,7 +11,7 @@
 #include "eval.hh"
 #include "env.hh"
 
-int repl()
+int repl(bool terminal)
 {
     History history;
     std::string line;
@@ -18,7 +19,7 @@ int repl()
     Env env;
     Builtin b(s);
     while (!std::cin.eof()) {
-        std::cout << "lisp> ";
+        if (terminal) std::cout << "lisp> ";
         std::getline(std::cin, line);
         if (std::cin.eof()) break;
         history.add(line);
@@ -41,5 +42,5 @@ int repl()
 
 int main(int argc, char **argv)
 {
-    return repl();
+    return repl(isatty(fileno(stdin)));
 }
