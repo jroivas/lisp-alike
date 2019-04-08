@@ -160,8 +160,8 @@ TEST_CASE("Eval let* complex", "[eval]") {
     REQUIRE(toInt(v)->value() == 35);
 }
 
-TEST_CASE("Eval if case", "[eval]") {
-    Tokenize t("(if (1) (2) (3))");
+TEST_CASE("Eval simple if case", "[eval]") {
+    Tokenize t("(if 1 2 3)");
     Parse p(t);
     Symbols s;
     Builtin b(s);
@@ -172,4 +172,18 @@ TEST_CASE("Eval if case", "[eval]") {
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Int);
     REQUIRE(toInt(v)->value() == 2);
+}
+
+TEST_CASE("Eval if nil false", "[eval]") {
+    Tokenize t("(if nil (+ 2 5) (* 2 5))");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v = e.eval(p);
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 10);
 }
