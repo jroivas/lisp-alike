@@ -80,14 +80,24 @@ Value *Eval::evalFunction(FunctionValue *function, Value *n)
 {
     Env *fnEnv = new Env();
     Value *bind = function->params();
-    Value *v = nullptr;
-    while ((v = iterValue(bind, v)) != nullptr) {
+    Value *v = iterInit(bind);
+    while (v != nullptr) {
         if (v->type() != Type::Symbol)
             ERROR("Expected symbol!")
         std::string s = toSymbol(v)->value();
         fnEnv->set(s, n);
         if (n != nullptr) n = n->cdr();
+        v = iterNext(v);
     }
 
-    return nullptr;
+    Value *body = function->value()->clone();
+    bind = function->params();
+    v = iterInit(bind);
+    while (v != nullptr) {
+        body->addLast(v->clone());
+        v = iterNext(v);
+    }
+
+    Eval ev(symbols, *fnEnv);
+    return ev.evalValue(body);
 }

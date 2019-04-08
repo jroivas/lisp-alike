@@ -188,15 +188,5 @@ Value *Builtin::do_kw(Value *a, Value *b, Eval *ev, Env *n)
 
 Value *Builtin::fn_star(Value *a, Value *b, Eval *ev, Env *n)
 {
-#if 0
-    Env *fnEnv = new Env();
-    Value *v = nullptr;
-    while ((v = iterValue(a, v)) != nullptr) {
-        if (v->type() != Type::Symbol)
-            ERROR("Expected symbol!")
-        std::string s = toSymbol(v)->value();
-        fnEnv->set(s, n->get(s));
-    }
-#endif
     return new FunctionValue(a, b);
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <string>
 #include "errors.hh"
 
@@ -126,13 +127,14 @@ private:
 };
 ValueConv(Function, Type::Function)
 
-inline Value *iterValue(Value *o, Value *v) {
+inline Value *iterInit(Value *o) {
     if (o->type() != Type::List && o->type() != Type::Vector)
         FATAL("Invalid iterator");
-    if (v == nullptr) {
-        v = o->type() == Type::List
-            ? toList(o)->value()
-            : toVector(o)->value();
-    }
+    return o->type() == Type::List
+        ? toList(o)->value()
+        : toVector(o)->value();
+}
+inline Value *iterNext(Value *v) {
+    if (v == nullptr) return nullptr;
     return v->cdr();
 }

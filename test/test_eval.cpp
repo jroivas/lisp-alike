@@ -308,4 +308,35 @@ TEST_CASE("Eval simple fn! apply", "[eval]") {
     CHECK_NOTHROW(v = e.eval(p));
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 7);
+}
+
+TEST_CASE("Eval plus fn! apply", "[eval]") {
+    Tokenize t("((fn* [a] (+ a 1)) 7)");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v;
+    CHECK_NOTHROW(v = e.eval(p));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 8);
+}
+
+TEST_CASE("Eval plus fn! apply two params", "[eval]") {
+    Tokenize t("((fn* [a b] (+ a b)) 2 3)");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v;
+    CHECK_NOTHROW(v = e.eval(p));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 5);
 }

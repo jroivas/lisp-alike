@@ -1,6 +1,5 @@
 #include "parse.hh"
 
-#include <iostream>
 #include <regex>
 
 static const std::regex intRegex("^[-+]?\\d+$");

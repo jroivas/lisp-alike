@@ -1,5 +1,5 @@
 #include "tokenize.hh"
-#include <iostream>
+#include "errors.hh"
 
 static const std::regex whitespaceRegex("[\\s,]+|;.*");
 static const std::regex tokenRegexes[] = {
@@ -67,5 +67,5 @@ void Tokenize::nextToken()
         if (matchRegex(regex)) return;
     }
 
-    std::cerr << "Mitchmatch in tokenizer\n";
+    ERROR("Mitchmatch in tokenizer\n");
 }
