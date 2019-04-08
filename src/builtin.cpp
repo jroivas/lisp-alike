@@ -154,10 +154,8 @@ Value *Builtin::let_star(Value *a, Value *b, Eval *ev, Env *n)
     return e.evalValue(b);
 }
 
-#include <iostream>
 bool isTruth(Value *v)
 {
-    std::cout << "VV " << (int)v->type() << "\n";
     switch (v->type()) {
         case Type::Bool: return toBool(v)->value();
         case Type::Nil: return false;
