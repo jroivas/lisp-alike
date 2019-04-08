@@ -19,6 +19,7 @@ Value *Eval::evalValue(Value *v)
         case Type::List: return evalList(toList(v));
         case Type::Vector: return evalVector(toVector(v));
         case Type::Symbol: return evalSymbol(toSymbol(v));
+        case Type::Function: return evalFunction(toFunction(v));
         default: return v;
     }
 }
@@ -48,10 +49,15 @@ Value *Eval::evalList(ListValue *list)
 {
     Value *v = list->value();
     if (v == nullptr) return list;
-    if (v->type() != Type::Symbol)
-        ERROR("Not applicable: " + v->toString());
 
-    return evalSymbol(toSymbol(v));
+    if (v->type() == Type::Symbol)
+        return evalSymbol(toSymbol(v));
+
+    Value *v2 = evalValue(v);
+    if (v2 != nullptr && v2->type() == Type::Function)
+        return evalFunction(toFunction(v2));
+
+    ERROR("Not applicable: " + v->toString());
 }
 
 Value *Eval::evalVector(VectorValue *list)
@@ -67,4 +73,9 @@ Value *Eval::evalVector(VectorValue *list)
     }
 
     return new VectorValue(res);
+}
+
+Value *Eval::evalFunction(FunctionValue *function)
+{
+    return nullptr;
 }

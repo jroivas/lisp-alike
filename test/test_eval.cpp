@@ -295,3 +295,17 @@ TEST_CASE("Eval simple fn!", "[eval]") {
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Function);
 }
+
+TEST_CASE("Eval simple fn! apply", "[eval]") {
+    Tokenize t("((fn* [a] a) 7)");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v;
+    CHECK_NOTHROW(v = e.eval(p));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+}
