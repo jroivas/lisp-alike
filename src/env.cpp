@@ -63,46 +63,5 @@ Env *Env::bind(Value *bind, Value *params)
     }
     fnEnv->set(restName, new ListValue(restValue));
 
-    //Value *body = function->value()->clone();
-    /*
-    Value *restList = nullptr;
-    bind = params;
-    v = bind;
-    while (v != nullptr) {
-        //body->addLast(v->clone());
-        v = iterNext(v);
-    }
-    */
     return fnEnv;
-#if 0
-    Env *tmp = new Env();
-    Value *v = bind;
-    bool restList = false;
-    std::string restName;
-    Value *restListItem = nullptr;
-    std::cout << "---\n";
-    while (v != nullptr) {
-        if (v->type() != Type::Symbol)
-            ERROR("Expected symbol!")
-        std::string s = toSymbol(v)->value();
-        std::cout << "SS " << s<<"\n";
-        if (restList) {
-            std::cout << "S1\n";
-            if (restListItem)
-                ERROR("Expected only one item after &");
-            restName = s;
-            restListItem = get(s)->clone();
-        } else if (s == "&") {
-            std::cout << "S2\n";
-            restList = true;
-        } else {
-            std::cout << "S3\n";
-            tmp->set(s, get(s));
-        }
-        v = iterNext(v);
-    }
-    if (restList)
-        tmp->set(restName, new ListValue(restListItem));
-    return tmp;
-#endif
 }

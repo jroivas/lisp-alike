@@ -100,7 +100,9 @@ Value *Eval::evalVector(VectorValue *list)
 
 Value *Eval::evalFunction(FunctionValue *function, Value *n)
 {
-    Env *fnEnv = Env::bind(iterInit(function->params()), n);
+    Env *fnEnv = Env::bind(
+            iterInit(function->params()),
+            evalValue(n));
     Value *body = function->value()->clone();
 
     Eval ev(symbols, *fnEnv);
