@@ -32,6 +32,7 @@ void Builtin::init()
     symbols.registerSymbol("empty?", this->empty_is, false);
     symbols.registerSymbol("count", this->count, false);
     symbols.registerSymbol("=", this->equals, false);
+    symbols.registerSymbol("<=", this->less_or_eq, false);
 }
 
 double getDoubleNumber(Value *v)
@@ -257,4 +258,25 @@ Value *Builtin::equals(Value *a, Value *b, Eval *ev, Env *n)
 
     bool r = a->equals(b);
     return new BoolValue(r);
+}
+
+Value *Builtin::less_or_eq(Value *a, Value *b, Eval *ev, Env *n)
+{
+    if (a == nullptr || b == nullptr)
+        ERROR("Requires two params");
+
+    if (a->type() != Type::Int &&
+        a->type() != Type::Float)
+        ERROR("First parameter for <= is not int or float");
+    if (b->type() != Type::Int &&
+        b->type() != Type::Float)
+        ERROR("Second parameter for <= is not int or float");
+
+    if (a->type() == Type::Float ||
+        b->type() == Type::Float) {
+        return new BoolValue(getDoubleNumber(a) <=
+                getDoubleNumber(b));
+    }
+
+    return new BoolValue(toInt(a)->value() <= toInt(b)->value());
 }
