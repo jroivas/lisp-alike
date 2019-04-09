@@ -22,6 +22,7 @@ void Builtin::init()
     symbols.registerSymbol("list?", this->list_is, false);
     symbols.registerSymbol("empty?", this->empty_is, false);
     symbols.registerSymbol("count", this->count, false);
+    symbols.registerSymbol("=", this->equals);
 }
 
 double getDoubleNumber(Value *v)
@@ -245,4 +246,13 @@ Value *Builtin::count(Value *a, Value *b, Eval *ev, Env *n)
     }
 
     return new IntValue(cnt);
+}
+
+Value *Builtin::equals(Value *a, Value *b, Eval *ev, Env *n)
+{
+    a = ev->evalValue(a);
+    b = ev->evalValue(b);
+
+    bool r = a->equals(b);
+    return new BoolValue(r);
 }

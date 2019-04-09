@@ -31,3 +31,9 @@ std::string typeStr(Type t)
         default: return "<INVALID>";
     };
 }
+
+bool listCompartor(const Value *a, const Value *b)
+{
+    //FIXME
+    return a == b;
+}

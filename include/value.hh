@@ -17,6 +17,11 @@ enum class Type {
     Function
 };
 
+inline bool isListType(const Type &t)
+{
+    return t == Type::List || t == Type::Vector;
+}
+
 class Value
 {
 public:
@@ -40,6 +45,9 @@ public:
     void setNext(Value *v) {
         next = v;
     }
+    bool isList() const {
+        return isListType(valueType);
+    }
 
     virtual std::string toString() const {
         return "<INVALID>";
@@ -47,8 +55,19 @@ public:
     virtual Value* clone() const {
         return new Value(valueType);
     }
+    virtual bool equals(const Value *other) const {
+        if (other == nullptr) return false;
+        if (!((isList() && other->isList()) ||
+            valueType == other->type())) return false;
+
+        return _equals(other);
+    }
 
 protected:
+    virtual bool _equals(const Value *other) const {
+        ERROR("Equals not implemented!");
+    }
+
     Value(Type t) : valueType(t), next(nullptr) {}
 
 private:
@@ -57,6 +76,7 @@ private:
     Value *next;
 };
 
+typedef bool (compFunc)(const Value *a, const Value *b);
 std::string typeStr(Type t);
 std::string boolToString(bool v);
 std::string listyToString(Value *v, char s, char e);
@@ -66,6 +86,7 @@ inline std::string listToString(Value *v) {
 inline std::string vectorToString(Value *v) {
     return listyToString(v, '[', ']');
 }
+bool listCompartor(const Value *a, const Value *b);
 
 #define ValueConv(x, y)\
 static inline x ## Value* to##x(Value *val) {\
@@ -75,7 +96,7 @@ static inline x ## Value* to##x(Value *val) {\
     return static_cast<x ## Value*>(val); \
 }
 
-#define ValueDef(x, y, t, s)\
+#define ValueDef(x, y, t, s, hc, c)\
 class x ## Value : public Value\
 {\
 public:\
@@ -87,18 +108,27 @@ public:\
     virtual Value* clone() const {\
         return new x ## Value(_value);\
     }\
+protected:\
+    virtual bool _equals(const Value *o) const {\
+        if (hc) {\
+            compFunc *ff = (compFunc*)c;\
+            return (*ff)(this, o);\
+        }\
+        const x ## Value *other = (const x ## Value*)o;\
+        return _value == other->_value;\
+    }\
 private:\
     t _value;\
 };\
 ValueConv(x, y)
 
-ValueDef(String, Type::String, std::string, )
-ValueDef(Symbol, Type::Symbol, std::string, )
-ValueDef(Bool, Type::Bool, bool, boolToString)
-ValueDef(Int, Type::Int, long long int, std::to_string)
-ValueDef(Float, Type::Float, double, std::to_string)
-ValueDef(List, Type::List, Value *, listToString)
-ValueDef(Vector, Type::Vector, Value *, vectorToString)
+ValueDef(String, Type::String, std::string, , false, nullptr)
+ValueDef(Symbol, Type::Symbol, std::string, , false, nullptr)
+ValueDef(Bool, Type::Bool, bool, boolToString,  false, nullptr)
+ValueDef(Int, Type::Int, long long int, std::to_string, false, nullptr)
+ValueDef(Float, Type::Float, double, std::to_string, false, nullptr)
+ValueDef(List, Type::List, Value *, listToString, true, listCompartor)
+ValueDef(Vector, Type::Vector, Value *, vectorToString, false, nullptr)
 
 class NilValue : public Value
 {
@@ -107,6 +137,10 @@ public:
     Value *value() { return nullptr; }
     std::string toString() const { return "nil"; }
     Value *clone() const { return new NilValue(); }
+protected:
+    virtual bool _equals(const Value *other) const {
+        return false;
+    }
 };
 ValueConv(Nil, Type::Nil)
 
@@ -121,6 +155,10 @@ public:
     std::string toString() const { return "#function"; }
     Value *clone() const { return new FunctionValue(bind, body); }
 
+protected:
+    virtual bool _equals(const Value *other) const {
+        return false;
+    }
 private:
     Value *bind;
     Value *body;

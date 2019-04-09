@@ -623,3 +623,28 @@ TEST_CASE("Test count list items", "[builtin]") {
     REQUIRE(res->type() == Type::Int);
     REQUIRE(toInt(res)->value() == 1);
 }
+
+TEST_CASE("Test equals", "[builtin]") {
+    Symbols s;
+    Env n;
+    Builtin b(s);
+    Eval ev(s, n);
+
+    REQUIRE(s.get("=") != nullptr);
+    Value *v1 = new IntValue(3);
+    Value *v2 = new IntValue(3);
+    Value *v3 = new IntValue(4);
+
+    Value *v;
+    REQUIRE_NOTHROW(
+        v = s.get("=")(v1, v2, &ev, &n));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Bool);
+    REQUIRE(toBool(v)->value() == true);
+
+    REQUIRE_NOTHROW(
+        v = s.get("=")(v1, v3, &ev, &n));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Bool);
+    REQUIRE(toBool(v)->value() == false);
+}
