@@ -340,3 +340,55 @@ TEST_CASE("Eval plus fn! apply two params", "[eval]") {
     REQUIRE(v->type() == Type::Int);
     REQUIRE(toInt(v)->value() == 5);
 }
+
+TEST_CASE("Eval params to list", "[eval]") {
+    Tokenize t("(list 1 2 3)");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v;
+    CHECK_NOTHROW(v = e.eval(p));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::List);
+
+    v = toList(v)->value();
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 1);
+
+    v = v->cdr();
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 2);
+
+    v = v->cdr();
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 3);
+}
+
+TEST_CASE("Eval complex params to list", "[eval]") {
+    Tokenize t("(list (+ 7 2) (* 2 3) (/ 10 3))");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v;
+    CHECK_NOTHROW(v = e.eval(p));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::List);
+
+    v = toList(v)->value();
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 9);
+
+    v = v->cdr();
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 6);
+
+    v = v->cdr();
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 3);
+}

@@ -18,6 +18,7 @@ void Builtin::init()
     symbols.registerSymbol("if", this->if_kw, false);
     symbols.registerSymbol("do", this->do_kw, false);
     symbols.registerSymbol("fn*", this->fn_star, false);
+    symbols.registerSymbol("list", this->list, false);
 }
 
 double getDoubleNumber(Value *v)
@@ -189,4 +190,15 @@ Value *Builtin::do_kw(Value *a, Value *b, Eval *ev, Env *n)
 Value *Builtin::fn_star(Value *a, Value *b, Eval *ev, Env *n)
 {
     return new FunctionValue(a, b);
+}
+
+Value *Builtin::list(Value *a, Value *b, Eval *ev, Env *n)
+{
+    Value *res = ev->evalValue(a->clone());
+    while (b != nullptr) {
+        res->addLast(ev->evalValue(b->clone()));
+        b = b->cdr();
+    }
+
+    return new ListValue(res);
 }

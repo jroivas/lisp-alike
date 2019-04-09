@@ -134,6 +134,7 @@ inline Value *iterInit(Value *o) {
         ? toList(o)->value()
         : toVector(o)->value();
 }
+
 inline Value *iterNext(Value *v) {
     if (v == nullptr) return nullptr;
     return v->cdr();
