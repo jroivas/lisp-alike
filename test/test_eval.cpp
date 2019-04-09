@@ -492,3 +492,43 @@ TEST_CASE("Env binding list too little binds", "[env]") {
 
     REQUIRE_THROWS(Env::bind(a, p1));
 }
+
+TEST_CASE("Eval less than", "[eval]") {
+    Value *v;
+    CHECK_NOTHROW(v = evalLine("(<= 1 2)"));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Bool);
+    REQUIRE(toBool(v)->value() == true);
+}
+
+TEST_CASE("Eval less than 2", "[eval]") {
+    Value *v;
+    CHECK_NOTHROW(v = evalLine("(<= 2 2)"));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Bool);
+    REQUIRE(toBool(v)->value() == true);
+}
+
+TEST_CASE("Eval less than false", "[eval]") {
+    Value *v;
+    CHECK_NOTHROW(v = evalLine("(<= 3 2)"));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Bool);
+    REQUIRE(toBool(v)->value() == false);
+}
+
+TEST_CASE("Eval less than double", "[eval]") {
+    Value *v;
+    CHECK_NOTHROW(v = evalLine("(<= 1.5 2)"));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Bool);
+    REQUIRE(toBool(v)->value() == true);
+}
+
+TEST_CASE("Eval less than double false", "[eval]") {
+    Value *v;
+    CHECK_NOTHROW(v = evalLine("(<= 2.2 2)"));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Bool);
+    REQUIRE(toBool(v)->value() == false);
+}
