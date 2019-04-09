@@ -18,6 +18,7 @@ int repl(bool terminal)
     Symbols s;
     Env env;
     Builtin b(s);
+    b.install(&env);
     while (!std::cin.eof()) {
         if (terminal) std::cout << "lisp> ";
         std::getline(std::cin, line);

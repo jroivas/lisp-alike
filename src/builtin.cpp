@@ -7,6 +7,16 @@ Builtin::Builtin(Symbols &s) : symbols(s)
     init();
 }
 
+void Builtin::install(Env *e)
+{
+    installFunction(e, "(def! list (fn* (& items) items))");
+}
+
+void Builtin::installFunction(Env *e, std::string f)
+{
+    evalLine(symbols, *e, f);
+}
+
 void Builtin::init()
 {
     symbols.registerSymbol("+", this->plus);
@@ -18,7 +28,7 @@ void Builtin::init()
     symbols.registerSymbol("if", this->if_kw, false);
     symbols.registerSymbol("do", this->do_kw, false);
     symbols.registerSymbol("fn*", this->fn_star, false);
-    symbols.registerSymbol("list", this->list, false);
+    //symbols.registerSymbol("list", this->list, false);
     symbols.registerSymbol("list?", this->list_is, false);
     symbols.registerSymbol("empty?", this->empty_is, false);
     symbols.registerSymbol("count", this->count, false);

@@ -404,91 +404,11 @@ TEST_CASE("Test simple fn", "[builtin]") {
     REQUIRE(res->type() == Type::Function);
 }
 
-TEST_CASE("Test list cmd on nullptr", "[builtin]") {
-    Symbols s;
-    Env n;
-    Builtin b(s);
-    Eval ev(s, n);
-
-    REQUIRE(s.get("list")!= nullptr);
-
-    Value *res = s.get("list")(nullptr, nullptr, &ev, &n);
-    REQUIRE(res != nullptr);
-    REQUIRE(res->type() == Type::List);
-    REQUIRE(toList(res)->value() == nullptr);
-}
-
-TEST_CASE("Test list cmd", "[builtin]") {
-    Symbols s;
-    Env n;
-    Builtin b(s);
-    Eval ev(s, n);
-
-    Value *v1 = new IntValue(5);
-    Value *v2 = new SymbolValue("a");
-    Value *v3_1 = new SymbolValue("+");
-    Value *v3_2 = new IntValue(40);
-    Value *v3_3 = new IntValue(2);
-    v3_1->addLast(v3_2);
-    v3_1->addLast(v3_3);
-    Value *v3 = new ListValue(v3_1);
-
-    v1->addLast(v2);
-    v1->addLast(v3);
-
-    REQUIRE(s.get("list")!= nullptr);
-
-    Value *res = s.get("list")(v1, v2, &ev, &n);
-    REQUIRE(res != nullptr);
-    REQUIRE(res->type() == Type::List);
-
-    Value *v = toList(res)->value();
-    REQUIRE(v != nullptr);
-    REQUIRE(v->type() == Type::Int);
-    REQUIRE(toInt(v)->value() == 5);
-
-    v = v->cdr();
-    REQUIRE(v != nullptr);
-    REQUIRE(v->type() == Type::Symbol);
-    REQUIRE(toSymbol(v)->value() == "a");
-
-    v = v->cdr();
-    REQUIRE(v != nullptr);
-    REQUIRE(v->type() == Type::Int);
-    REQUIRE(toInt(v)->value() == 42);
-
-    v = v->cdr();
-    REQUIRE(v == nullptr);
-}
-
-TEST_CASE("Test list cmd on empty list", "[builtin]") {
-    Symbols s;
-    Env n;
-    Builtin b(s);
-    Eval ev(s, n);
-
-    Value *v1 = new ListValue(nullptr);
-
-    REQUIRE(s.get("list")!= nullptr);
-
-    Value *res = s.get("list")(v1, nullptr, &ev, &n);
-    REQUIRE(res != nullptr);
-    REQUIRE(res->type() == Type::List);
-
-    Value *v = toList(res)->value();
-    REQUIRE(v != nullptr);
-    REQUIRE(v->type() == Type::List);
-    Value *tmp = toList(v)->value();
-    REQUIRE(tmp == nullptr);
-
-    v = v->cdr();
-    REQUIRE(v == nullptr);
-}
-
 TEST_CASE("Test is list", "[builtin]") {
     Symbols s;
     Env n;
     Builtin b(s);
+    b.install(&n);
     Eval ev(s, n);
 
     Value *v1 = new IntValue(5);
@@ -505,28 +425,32 @@ TEST_CASE("Test is list", "[builtin]") {
     REQUIRE(res->type() == Type::Bool);
     REQUIRE(toBool(res)->value() == false);
 
-    res = s.get("list?")(v2, nullptr, &ev, &n);
+    REQUIRE_NOTHROW(
+        res = s.get("list?")(v2, nullptr, &ev, &n));
     REQUIRE(res != nullptr);
     REQUIRE(res->type() == Type::Bool);
     REQUIRE(toBool(res)->value() == false);
 
-    res = s.get("list?")(v3, nullptr, &ev, &n);
+    REQUIRE_NOTHROW(
+        res = s.get("list?")(v3, nullptr, &ev, &n));
     REQUIRE(res != nullptr);
     REQUIRE(res->type() == Type::Bool);
     REQUIRE(toBool(res)->value() == true);
 
-    res = s.get("list?")(v4, nullptr, &ev, &n);
+    REQUIRE_NOTHROW(
+        res = s.get("list?")(v4, nullptr, &ev, &n));
     REQUIRE(res != nullptr);
     REQUIRE(res->type() == Type::Bool);
     REQUIRE(toBool(res)->value() == false);
 
-    res = s.get("list?")(v5, nullptr, &ev, &n);
+    REQUIRE_NOTHROW(
+        res = s.get("list?")(v5, nullptr, &ev, &n));
     REQUIRE(res != nullptr);
     REQUIRE(res->type() == Type::Bool);
     REQUIRE(toBool(res)->value() == true);
 
-    CHECK_NOTHROW(
-    res = s.get("list?")(nullptr, nullptr, &ev, &n));
+    REQUIRE_NOTHROW(
+        res = s.get("list?")(nullptr, nullptr, &ev, &n));
     REQUIRE(res != nullptr);
     REQUIRE(res->type() == Type::Bool);
     REQUIRE(toBool(res)->value() == false);
@@ -536,6 +460,7 @@ TEST_CASE("Test is list empty", "[builtin]") {
     Symbols s;
     Env n;
     Builtin b(s);
+    b.install(&n);
     Eval ev(s, n);
 
     Value *v1 = new ListValue(nullptr);
@@ -581,6 +506,7 @@ TEST_CASE("Test count list items", "[builtin]") {
     Symbols s;
     Env n;
     Builtin b(s);
+    b.install(&n);
     Eval ev(s, n);
 
     Value *v1 = new ListValue(nullptr);

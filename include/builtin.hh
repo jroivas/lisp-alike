@@ -12,6 +12,9 @@ public:
     Builtin(Symbols &s);
     void init();
 
+    void install(Env *e);
+    void installFunction(Env *e, std::string f);
+
 private:
     Symbols &symbols;
     static Value *plus(Value *a, Value *b, Eval *ev, Env *n);

@@ -46,8 +46,8 @@ Env *Env::bind(Value *bind, Value *params)
         } else {
             fnEnv->set(s, n);
         }
-        if (n == nullptr) ERROR("Not enought parameters");
-        if (!rest) n = n->cdr();
+        //if (n == nullptr) ERROR("Not enought parameters");
+        if (n != nullptr && !rest) n = n->cdr();
         v = v->cdr();
     }
 

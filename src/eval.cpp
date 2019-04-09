@@ -14,6 +14,7 @@ Value *evalLine(std::string l)
     Symbols s;
     Builtin b(s);
     Env env;
+    b.install(&env);
 
     return evalLine(s, env, l);
 }
@@ -98,11 +99,24 @@ Value *Eval::evalVector(VectorValue *list)
     return new VectorValue(res);
 }
 
+Value *evalAllList(Eval *e, Value *l)
+{
+    Value *r = nullptr;
+    while (l != nullptr) {
+        if (r == nullptr)
+            r = e->evalValue(l->clone());
+        else
+            r->addLast(e->evalValue(l->clone()));
+        l = l->cdr();
+    }
+    return r;
+}
+
 Value *Eval::evalFunction(FunctionValue *function, Value *n)
 {
     Env *fnEnv = Env::bind(
             iterInit(function->params()),
-            evalValue(n));
+            evalAllList(this, n));
     Value *body = function->value()->clone();
 
     Eval ev(symbols, *fnEnv);
