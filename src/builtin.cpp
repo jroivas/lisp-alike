@@ -20,6 +20,7 @@ void Builtin::init()
     symbols.registerSymbol("fn*", this->fn_star, false);
     symbols.registerSymbol("list", this->list, false);
     symbols.registerSymbol("list?", this->list_is, false);
+    symbols.registerSymbol("empty?", this->empty_is, false);
 }
 
 double getDoubleNumber(Value *v)
@@ -210,4 +211,17 @@ Value *Builtin::list_is(Value *a, Value *b, Eval *ev, Env *n)
 {
     a = ev->evalValue(a);
     return new BoolValue(a != nullptr && a->type() == Type::List);
+}
+
+Value *Builtin::empty_is(Value *a, Value *b, Eval *ev, Env *n)
+{
+    a = ev->evalValue(a);
+    if (a == nullptr || (a->type() != Type::List &&
+            a->type() != Type::Vector))
+        ERROR("Expected list kind of type to empty?");
+
+    Value *v = a->type() == Type::List
+        ? toList(a)->value()
+        : toVector(a)->value();
+    return new BoolValue(v == nullptr);
 }

@@ -531,3 +531,48 @@ TEST_CASE("Test is list", "[builtin]") {
     REQUIRE(res->type() == Type::Bool);
     REQUIRE(toBool(res)->value() == false);
 }
+
+TEST_CASE("Test is list empty", "[builtin]") {
+    Symbols s;
+    Env n;
+    Builtin b(s);
+    Eval ev(s, n);
+
+    Value *v1 = new ListValue(nullptr);
+    Value *v2 = new SymbolValue("a");
+
+    Value *v3_1 = new SymbolValue("list");
+    Value *v3_2 = new SymbolValue("1");
+    v3_1->addLast(v3_2);
+    Value *v3 = new ListValue(v3_1);
+    Value *v4 = new VectorValue(nullptr);
+    Value *v5 = new VectorValue(v3);
+
+    REQUIRE(s.get("empty?") != nullptr);
+
+    Value *res = s.get("empty?")(v1, nullptr, &ev, &n);
+    REQUIRE(res != nullptr);
+    REQUIRE(res->type() == Type::Bool);
+    REQUIRE(toBool(res)->value() == true);
+
+    REQUIRE_THROWS(
+        res = s.get("empty?")(v2, nullptr, &ev, &n));
+
+    REQUIRE_NOTHROW(
+        res = s.get("empty?")(v3, nullptr, &ev, &n));
+    REQUIRE(res != nullptr);
+    REQUIRE(res->type() == Type::Bool);
+    REQUIRE(toBool(res)->value() == false);
+
+    REQUIRE_NOTHROW(
+        res = s.get("empty?")(v4, nullptr, &ev, &n));
+    REQUIRE(res != nullptr);
+    REQUIRE(res->type() == Type::Bool);
+    REQUIRE(toBool(res)->value() == true);
+
+    REQUIRE_NOTHROW(
+        res = s.get("empty?")(v5, nullptr, &ev, &n));
+    REQUIRE(res != nullptr);
+    REQUIRE(res->type() == Type::Bool);
+    REQUIRE(toBool(res)->value() == false);
+}

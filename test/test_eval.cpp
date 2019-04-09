@@ -435,3 +435,33 @@ TEST_CASE("Eval int not list", "[eval]") {
     REQUIRE(v->type() == Type::Bool);
     REQUIRE(toBool(v)->value() == false);
 }
+
+TEST_CASE("Eval list emptiness with vector", "[eval]") {
+    Tokenize t("(empty? [1 2 3])");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v;
+    CHECK_NOTHROW(v = e.eval(p));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Bool);
+    REQUIRE(toBool(v)->value() == false);
+}
+
+TEST_CASE("Eval list emptiness", "[eval]") {
+    Tokenize t("(empty? (list))");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v;
+    CHECK_NOTHROW(v = e.eval(p));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Bool);
+    REQUIRE(toBool(v)->value() == true);
+}
