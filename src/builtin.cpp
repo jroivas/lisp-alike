@@ -28,7 +28,6 @@ void Builtin::init()
     symbols.registerSymbol("if", this->if_kw, false);
     symbols.registerSymbol("do", this->do_kw, false);
     symbols.registerSymbol("fn*", this->fn_star, false);
-    //symbols.registerSymbol("list", this->list, false);
     symbols.registerSymbol("list?", this->list_is, false);
     symbols.registerSymbol("empty?", this->empty_is, false);
     symbols.registerSymbol("count", this->count, false);
@@ -210,19 +209,6 @@ Value *Builtin::do_kw(Value *a, Value *b, Eval *ev, Env *n)
 Value *Builtin::fn_star(Value *a, Value *b, Eval *ev, Env *n)
 {
     return new FunctionValue(a, b);
-}
-
-Value *Builtin::list(Value *a, Value *b, Eval *ev, Env *n)
-{
-    if (a == nullptr) return new ListValue(nullptr);
-
-    Value *res = ev->evalValue(a->clone());
-    while (b != nullptr) {
-        res->addLast(ev->evalValue(b->clone()));
-        b = b->cdr();
-    }
-
-    return new ListValue(res);
 }
 
 Value *Builtin::list_is(Value *a, Value *b, Eval *ev, Env *n)

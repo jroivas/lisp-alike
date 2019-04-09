@@ -26,7 +26,6 @@ private:
     static Value *if_kw(Value *a, Value *b, Eval *ev, Env *n);
     static Value *do_kw(Value *a, Value *b, Eval *ev, Env *n);
     static Value *fn_star(Value *a, Value *b, Eval *ev, Env *n);
-    static Value *list(Value *a, Value *b, Eval *ev, Env *n);
     static Value *list_is(Value *a, Value *b, Eval *ev, Env *n);
     static Value *empty_is(Value *a, Value *b, Eval *ev, Env *n);
     static Value *count(Value *a, Value *b, Eval *ev, Env *n);
