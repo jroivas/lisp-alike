@@ -191,14 +191,14 @@ TEST_CASE("Eval complex vector", "[eval]") {
     REQUIRE(toInt(v)->value() == 8);
 }
 
-TEST_CASE("Eval simple fn!", "[eval]") {
+TEST_CASE("Eval simple fn*", "[eval]") {
     Value *v;
     CHECK_NOTHROW(v = evalLine("(fn* [a] a)"));
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Function);
 }
 
-TEST_CASE("Eval simple fn! apply", "[eval]") {
+TEST_CASE("Eval simple fn* apply", "[eval]") {
     Value *v;
     CHECK_NOTHROW(v = evalLine("((fn* [a] a) 7)"));
     REQUIRE(v != nullptr);
@@ -206,7 +206,7 @@ TEST_CASE("Eval simple fn! apply", "[eval]") {
     REQUIRE(toInt(v)->value() == 7);
 }
 
-TEST_CASE("Eval plus fn! apply", "[eval]") {
+TEST_CASE("Eval plus fn* apply", "[eval]") {
     Value *v;
     CHECK_NOTHROW(v = evalLine("((fn* [a] (+ a 1)) 7)"));
     REQUIRE(v != nullptr);
@@ -214,7 +214,7 @@ TEST_CASE("Eval plus fn! apply", "[eval]") {
     REQUIRE(toInt(v)->value() == 8);
 }
 
-TEST_CASE("Eval plus fn! apply two params", "[eval]") {
+TEST_CASE("Eval plus fn* apply two params", "[eval]") {
     Value *v;
     CHECK_NOTHROW(v = evalLine(
         "((fn* [a b] (+ a b)) 2 3)"));
@@ -353,4 +353,20 @@ TEST_CASE("Eval list equals to vector", "[eval]") {
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Bool);
     REQUIRE(toBool(v)->value() == true);
+}
+
+TEST_CASE("Eval fn* and apply func", "[eval]") {
+    Symbols s;
+    Builtin b(s);
+    Env env;
+
+    Value *v;
+    CHECK_NOTHROW(v = evalLine(s, env,
+        "(def! tst (fn* [a b] (+ a b)))"));
+
+    CHECK_NOTHROW(v = evalLine(s, env, "(tst 1 2)"));
+
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 3);
 }

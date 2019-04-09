@@ -48,8 +48,11 @@ Value *Eval::evalSymbol(SymbolValue *symbol)
     auto symbolData = symbols.getSymbol(val);
     if (symbolData == nullptr) {
         Value *v = env.get(val);
-        if (v != nullptr) return v;
-        return symbol;
+        if (v == nullptr)
+            return symbol;
+        if (v->type() != Type::Function)
+            return v;
+        return evalFunction(toFunction(v), symbol->cdr());
     }
     auto handler = symbolData->handler;
 
