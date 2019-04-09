@@ -465,3 +465,48 @@ TEST_CASE("Eval list emptiness", "[eval]") {
     REQUIRE(v->type() == Type::Bool);
     REQUIRE(toBool(v)->value() == true);
 }
+
+TEST_CASE("Eval empty list count", "[eval]") {
+    Tokenize t("(count (list))");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v;
+    CHECK_NOTHROW(v = e.eval(p));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 0);
+}
+
+TEST_CASE("Eval list count", "[eval]") {
+    Tokenize t("(count (list 4 5 8 9 1))");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v;
+    CHECK_NOTHROW(v = e.eval(p));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 5);
+}
+
+TEST_CASE("Eval complex list count", "[eval]") {
+    Tokenize t("(count (list 4 (+ 5 8) 9 1))");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v;
+    CHECK_NOTHROW(v = e.eval(p));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 4);
+}

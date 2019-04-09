@@ -576,3 +576,50 @@ TEST_CASE("Test is list empty", "[builtin]") {
     REQUIRE(res->type() == Type::Bool);
     REQUIRE(toBool(res)->value() == false);
 }
+
+TEST_CASE("Test count list items", "[builtin]") {
+    Symbols s;
+    Env n;
+    Builtin b(s);
+    Eval ev(s, n);
+
+    Value *v1 = new ListValue(nullptr);
+    Value *v2 = new SymbolValue("a");
+
+    Value *v3_1 = new SymbolValue("list");
+    Value *v3_2 = new SymbolValue("1");
+    Value *v3_3 = new SymbolValue("4");
+    v3_1->addLast(v3_2);
+    v3_1->addLast(v3_3);
+    Value *v3 = new ListValue(v3_1);
+    Value *v4 = new VectorValue(nullptr);
+    Value *v5 = new VectorValue(v3);
+
+    REQUIRE(s.get("count") != nullptr);
+
+    Value *res = s.get("count")(v1, nullptr, &ev, &n);
+    REQUIRE(res != nullptr);
+    REQUIRE(res->type() == Type::Int);
+    REQUIRE(toInt(res)->value() == 0);
+
+    REQUIRE_THROWS(
+        res = s.get("count")(v2, nullptr, &ev, &n));
+
+    REQUIRE_NOTHROW(
+        res = s.get("count")(v3, nullptr, &ev, &n));
+    REQUIRE(res != nullptr);
+    REQUIRE(res->type() == Type::Int);
+    REQUIRE(toInt(res)->value() == 2);
+
+    REQUIRE_NOTHROW(
+        res = s.get("count")(v4, nullptr, &ev, &n));
+    REQUIRE(res != nullptr);
+    REQUIRE(res->type() == Type::Int);
+    REQUIRE(toInt(res)->value() == 0);
+
+    REQUIRE_NOTHROW(
+        res = s.get("count")(v5, nullptr, &ev, &n));
+    REQUIRE(res != nullptr);
+    REQUIRE(res->type() == Type::Int);
+    REQUIRE(toInt(res)->value() == 1);
+}
