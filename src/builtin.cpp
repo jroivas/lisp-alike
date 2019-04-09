@@ -22,7 +22,7 @@ void Builtin::init()
     symbols.registerSymbol("list?", this->list_is, false);
     symbols.registerSymbol("empty?", this->empty_is, false);
     symbols.registerSymbol("count", this->count, false);
-    symbols.registerSymbol("=", this->equals);
+    symbols.registerSymbol("=", this->equals, false);
 }
 
 double getDoubleNumber(Value *v)

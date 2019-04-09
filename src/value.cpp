@@ -32,8 +32,26 @@ std::string typeStr(Type t)
     };
 }
 
+Value *listValue(const Value *l)
+{
+    if (l == nullptr) return nullptr;
+    if (!isListType(l->type())) ERROR("Not a list!");
+
+    // FIXME Discard const
+    return l->type() == Type::List
+        ? toList((Value*)l)->value()
+        : toVector((Value*)l)->value();
+}
+
 bool listCompartor(const Value *a, const Value *b)
 {
-    //FIXME
-    return a == b;
+    Value *l1 = listValue(a);
+    Value *l2 = listValue(b);
+
+    while (l1 != nullptr) {
+        if (!l1->equals(l2)) return false;
+        l1 = l1->cdr();
+        l2 = l2->cdr();
+    }
+    return true;
 }

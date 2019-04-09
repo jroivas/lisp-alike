@@ -510,3 +510,48 @@ TEST_CASE("Eval complex list count", "[eval]") {
     REQUIRE(v->type() == Type::Int);
     REQUIRE(toInt(v)->value() == 4);
 }
+
+TEST_CASE("Eval list equals", "[eval]") {
+    Tokenize t("(= (list 1 2) (list 1 2))");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v;
+    CHECK_NOTHROW(v = e.eval(p));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Bool);
+    REQUIRE(toBool(v)->value() == true);
+}
+
+TEST_CASE("Eval list not equals", "[eval]") {
+    Tokenize t("(= (list 1 2) (list 1 3))");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v;
+    CHECK_NOTHROW(v = e.eval(p));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Bool);
+    REQUIRE(toBool(v)->value() == false);
+}
+
+TEST_CASE("Eval list equals to vector", "[eval]") {
+    Tokenize t("(= (list 1 2 4 (+ 3 6)) [1 2 4 9])");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v;
+    CHECK_NOTHROW(v = e.eval(p));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Bool);
+    REQUIRE(toBool(v)->value() == true);
+}

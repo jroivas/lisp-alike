@@ -80,6 +80,7 @@ typedef bool (compFunc)(const Value *a, const Value *b);
 std::string typeStr(Type t);
 std::string boolToString(bool v);
 std::string listyToString(Value *v, char s, char e);
+Value *listValue(const Value *l);
 inline std::string listToString(Value *v) {
     return listyToString(v, '(', ')');
 }
