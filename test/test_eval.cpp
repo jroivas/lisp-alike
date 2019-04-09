@@ -392,3 +392,46 @@ TEST_CASE("Eval complex params to list", "[eval]") {
     REQUIRE(v->type() == Type::Int);
     REQUIRE(toInt(v)->value() == 3);
 }
+
+TEST_CASE("Eval params to empty list", "[eval]") {
+    Tokenize t("(list)");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v;
+    CHECK_NOTHROW(v = e.eval(p));
+    REQUIRE(v != nullptr);
+}
+
+TEST_CASE("Eval list param is list", "[eval]") {
+    Tokenize t("(list? (list 1 2 3))");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v;
+    CHECK_NOTHROW(v = e.eval(p));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Bool);
+    REQUIRE(toBool(v)->value() == true);
+}
+
+TEST_CASE("Eval int not list", "[eval]") {
+    Tokenize t("(list? 1 2 3)");
+    Parse p(t);
+    Symbols s;
+    Builtin b(s);
+    Env n;
+    Eval e(s, n);
+
+    Value *v;
+    CHECK_NOTHROW(v = e.eval(p));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Bool);
+    REQUIRE(toBool(v)->value() == false);
+}

@@ -195,6 +195,8 @@ Value *Builtin::fn_star(Value *a, Value *b, Eval *ev, Env *n)
 
 Value *Builtin::list(Value *a, Value *b, Eval *ev, Env *n)
 {
+    if (a == nullptr) return new ListValue(nullptr);
+
     Value *res = ev->evalValue(a->clone());
     while (b != nullptr) {
         res->addLast(ev->evalValue(b->clone()));
@@ -206,5 +208,6 @@ Value *Builtin::list(Value *a, Value *b, Eval *ev, Env *n)
 
 Value *Builtin::list_is(Value *a, Value *b, Eval *ev, Env *n)
 {
+    a = ev->evalValue(a);
     return new BoolValue(a != nullptr && a->type() == Type::List);
 }

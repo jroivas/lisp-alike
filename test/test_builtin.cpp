@@ -404,6 +404,20 @@ TEST_CASE("Test simple fn", "[builtin]") {
     REQUIRE(res->type() == Type::Function);
 }
 
+TEST_CASE("Test list cmd on nullptr", "[builtin]") {
+    Symbols s;
+    Env n;
+    Builtin b(s);
+    Eval ev(s, n);
+
+    REQUIRE(s.get("list")!= nullptr);
+
+    Value *res = s.get("list")(nullptr, nullptr, &ev, &n);
+    REQUIRE(res != nullptr);
+    REQUIRE(res->type() == Type::List);
+    REQUIRE(toList(res)->value() == nullptr);
+}
+
 TEST_CASE("Test list cmd", "[builtin]") {
     Symbols s;
     Env n;
@@ -447,6 +461,30 @@ TEST_CASE("Test list cmd", "[builtin]") {
     REQUIRE(v == nullptr);
 }
 
+TEST_CASE("Test list cmd on empty list", "[builtin]") {
+    Symbols s;
+    Env n;
+    Builtin b(s);
+    Eval ev(s, n);
+
+    Value *v1 = new ListValue(nullptr);
+
+    REQUIRE(s.get("list")!= nullptr);
+
+    Value *res = s.get("list")(v1, nullptr, &ev, &n);
+    REQUIRE(res != nullptr);
+    REQUIRE(res->type() == Type::List);
+
+    Value *v = toList(res)->value();
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::List);
+    Value *tmp = toList(v)->value();
+    REQUIRE(tmp == nullptr);
+
+    v = v->cdr();
+    REQUIRE(v == nullptr);
+}
+
 TEST_CASE("Test is list", "[builtin]") {
     Symbols s;
     Env n;
@@ -455,8 +493,9 @@ TEST_CASE("Test is list", "[builtin]") {
 
     Value *v1 = new IntValue(5);
     Value *v2 = new SymbolValue("a");
-    Value *v3 = new ListValue(v1);
-    Value *v4 = new VectorValue(v1);
+    Value *v3_1 = new SymbolValue("list");
+    Value *v3 = new ListValue(v3_1);
+    Value *v4 = new VectorValue(v3_1);
     Value *v5 = new ListValue(nullptr);
 
     REQUIRE(s.get("list?") != nullptr);
@@ -485,4 +524,10 @@ TEST_CASE("Test is list", "[builtin]") {
     REQUIRE(res != nullptr);
     REQUIRE(res->type() == Type::Bool);
     REQUIRE(toBool(res)->value() == true);
+
+    CHECK_NOTHROW(
+    res = s.get("list?")(nullptr, nullptr, &ev, &n));
+    REQUIRE(res != nullptr);
+    REQUIRE(res->type() == Type::Bool);
+    REQUIRE(toBool(res)->value() == false);
 }

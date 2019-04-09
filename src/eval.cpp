@@ -38,11 +38,13 @@ Value *Eval::evalSymbol(SymbolValue *symbol)
 
     Value *res = symbol->cdr();
     Value *b = symbol->cdr();
-    while (b != nullptr && b->cdr() != nullptr) {
-        b = b->cdr();
+    // Needs to be evaluated at least once
+    do {
+        if (b != nullptr)
+            b = b->cdr();
         res = handler(res, b, this, &env);
-        if (!symbolData->recurse) break;
-    }
+    } while (b != nullptr && symbolData->recurse);
+
     return res;
 }
 
