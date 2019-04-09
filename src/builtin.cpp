@@ -106,11 +106,17 @@ Value *Builtin::div(Value *a, Value *b, Eval *ev, Env *e)
 
 Value *Builtin::def(Value *a, Value *b, Eval *ev, Env *e)
 {
+    if (a == nullptr) return nullptr;
+    Value *oa = a;
     a = ev->evalValue(a);
+    if ((a == nullptr || a->type() != Type::Symbol) &&
+        oa->type() == Type::Symbol)
+            a = oa;
     b = ev->evalValue(b);
 
     if (a == nullptr) return nullptr;
-    if (a->type() != Type::Symbol) return nullptr;
+    if (a->type() != Type::Symbol)
+        ERROR("Not a symbol!");
 
     e->set(toSymbol(a)->value(), b);
     return b;

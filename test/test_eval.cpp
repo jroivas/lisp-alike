@@ -370,3 +370,22 @@ TEST_CASE("Eval fn* and apply func", "[eval]") {
     REQUIRE(v->type() == Type::Int);
     REQUIRE(toInt(v)->value() == 3);
 }
+
+TEST_CASE("Eval def override", "[eval]") {
+    Symbols s;
+    Builtin b(s);
+    Env n;
+
+    Value *v;
+    CHECK_NOTHROW(v = evalLine(s, n, "(def! a 6)"));
+    CHECK_NOTHROW(v = evalLine(s, n, "a"));
+
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 6);
+
+    CHECK_NOTHROW(v = evalLine(s, n, "(def! a 10)"));
+    CHECK_NOTHROW(v = evalLine(s, n, "a"));
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == 10);
+}
