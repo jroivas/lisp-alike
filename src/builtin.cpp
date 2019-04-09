@@ -10,6 +10,8 @@ Builtin::Builtin(Symbols &s) : symbols(s)
 void Builtin::install(Env *e)
 {
     installFunction(e, "(def! list (fn* (& items) items))");
+    installFunction(e, "(def! not (fn* (cond) (if cond false true)))");
+    installFunction(e, "(def! < (fn* (a b) (not (<= b a))))");
 }
 
 void Builtin::installFunction(Env *e, std::string f)
