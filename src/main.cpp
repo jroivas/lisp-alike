@@ -25,10 +25,7 @@ int repl(bool terminal)
         history.add(line);
 
         try {
-            Tokenize tok(line);
-            Parse p(tok);
-            Eval e(s, env);
-            Value *ev = e.eval(p);
+            Value *ev = evalLine(s, env, line);
             if (ev != nullptr)
                 std::cout << ev->toString() << "\n";
             else std::cout << "nil\n";

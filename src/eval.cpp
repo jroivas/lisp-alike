@@ -1,6 +1,14 @@
 #include "eval.hh"
 #include "builtin.hh"
 
+Value *evalLine(Symbols &s, Env &env, std::string line)
+{
+    Tokenize tok(line);
+    Parse p(tok);
+    Eval e(s, env);
+    return e.eval(p);
+}
+
 Eval::Eval(Symbols &s, Env &e) :
     symbols(s), env(e)
 {

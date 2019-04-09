@@ -21,3 +21,5 @@ private:
     Symbols &symbols;
     Env &env;
 };
+
+Value *evalLine(Symbols &s, Env &e, std::string l);
