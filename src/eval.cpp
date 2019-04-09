@@ -9,6 +9,15 @@ Value *evalLine(Symbols &s, Env &env, std::string line)
     return e.eval(p);
 }
 
+Value *evalLine(std::string l)
+{
+    Symbols s;
+    Builtin b(s);
+    Env env;
+
+    return evalLine(s, env, l);
+}
+
 Eval::Eval(Symbols &s, Env &e) :
     symbols(s), env(e)
 {
