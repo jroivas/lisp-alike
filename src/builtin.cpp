@@ -19,6 +19,7 @@ void Builtin::init()
     symbols.registerSymbol("do", this->do_kw, false);
     symbols.registerSymbol("fn*", this->fn_star, false);
     symbols.registerSymbol("list", this->list, false);
+    symbols.registerSymbol("list?", this->list_is, false);
 }
 
 double getDoubleNumber(Value *v)
@@ -201,4 +202,9 @@ Value *Builtin::list(Value *a, Value *b, Eval *ev, Env *n)
     }
 
     return new ListValue(res);
+}
+
+Value *Builtin::list_is(Value *a, Value *b, Eval *ev, Env *n)
+{
+    return new BoolValue(a != nullptr && a->type() == Type::List);
 }

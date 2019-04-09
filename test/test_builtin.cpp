@@ -446,3 +446,43 @@ TEST_CASE("Test list cmd", "[builtin]") {
     v = v->cdr();
     REQUIRE(v == nullptr);
 }
+
+TEST_CASE("Test is list", "[builtin]") {
+    Symbols s;
+    Env n;
+    Builtin b(s);
+    Eval ev(s, n);
+
+    Value *v1 = new IntValue(5);
+    Value *v2 = new SymbolValue("a");
+    Value *v3 = new ListValue(v1);
+    Value *v4 = new VectorValue(v1);
+    Value *v5 = new ListValue(nullptr);
+
+    REQUIRE(s.get("list?") != nullptr);
+
+    Value *res = s.get("list?")(v1, nullptr, &ev, &n);
+    REQUIRE(res != nullptr);
+    REQUIRE(res->type() == Type::Bool);
+    REQUIRE(toBool(res)->value() == false);
+
+    res = s.get("list?")(v2, nullptr, &ev, &n);
+    REQUIRE(res != nullptr);
+    REQUIRE(res->type() == Type::Bool);
+    REQUIRE(toBool(res)->value() == false);
+
+    res = s.get("list?")(v3, nullptr, &ev, &n);
+    REQUIRE(res != nullptr);
+    REQUIRE(res->type() == Type::Bool);
+    REQUIRE(toBool(res)->value() == true);
+
+    res = s.get("list?")(v4, nullptr, &ev, &n);
+    REQUIRE(res != nullptr);
+    REQUIRE(res->type() == Type::Bool);
+    REQUIRE(toBool(res)->value() == false);
+
+    res = s.get("list?")(v5, nullptr, &ev, &n);
+    REQUIRE(res != nullptr);
+    REQUIRE(res->type() == Type::Bool);
+    REQUIRE(toBool(res)->value() == true);
+}
