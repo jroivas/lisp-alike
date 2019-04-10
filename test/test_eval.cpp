@@ -568,3 +568,43 @@ TEST_CASE("Eval less than", "[eval]") {
     REQUIRE(v->type() == Type::Bool);
     REQUIRE(toBool(v)->value() == true);
 }
+
+TEST_CASE("Eval less than false", "[eval]") {
+    Value *v;
+    CHECK_NOTHROW(v = evalLine("(< 2 1)"));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Bool);
+    REQUIRE(toBool(v)->value() == false);
+}
+
+TEST_CASE("Eval less than false equal", "[eval]") {
+    Value *v;
+    CHECK_NOTHROW(v = evalLine("(< 1 1)"));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Bool);
+    REQUIRE(toBool(v)->value() == false);
+}
+
+TEST_CASE("Eval more than", "[eval]") {
+    Value *v;
+    CHECK_NOTHROW(v = evalLine("(> 2 1)"));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Bool);
+    REQUIRE(toBool(v)->value() == true);
+}
+
+TEST_CASE("Eval more than false", "[eval]") {
+    Value *v;
+    CHECK_NOTHROW(v = evalLine("(> 1 2)"));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Bool);
+    REQUIRE(toBool(v)->value() == false);
+}
+
+TEST_CASE("Eval more than false equals", "[eval]") {
+    Value *v;
+    CHECK_NOTHROW(v = evalLine("(> 1 1)"));
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Bool);
+    REQUIRE(toBool(v)->value() == false);
+}

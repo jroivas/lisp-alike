@@ -12,6 +12,7 @@ void Builtin::install(Env *e)
     installFunction(e, "(def! list (fn* (& items) items))");
     installFunction(e, "(def! not (fn* (cond) (if cond false true)))");
     installFunction(e, "(def! < (fn* (a b) (not (<= b a))))");
+    installFunction(e, "(def! > (fn* (a b) (not (<= a b))))");
 }
 
 void Builtin::installFunction(Env *e, std::string f)
