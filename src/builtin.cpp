@@ -37,6 +37,7 @@ void Builtin::init()
     symbols.registerSymbol("count", this->count, false);
     symbols.registerSymbol("=", this->equals, false);
     symbols.registerSymbol("<=", this->less_or_eq, false);
+    symbols.registerSymbol("println", this->println, false);
 }
 
 double getDoubleNumber(Value *v)
@@ -286,4 +287,19 @@ Value *Builtin::less_or_eq(Value *a, Value *b, Eval *ev, Env *n)
     }
 
     return new BoolValue(toInt(a)->value() <= toInt(b)->value());
+}
+
+Value *Builtin::println(Value *a, Value *b, Eval *ev, Env *n)
+{
+    Value *v = a;
+    std::string res;
+
+    while (v != nullptr) {
+        a = ev->evalValue(v);
+        if (!res.empty()) res += " ";
+        res += a->toString();
+        v = v->cdr();
+    }
+    std::cout << res << "\n";
+    return nullptr;
 }

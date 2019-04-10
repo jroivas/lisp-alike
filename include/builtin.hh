@@ -31,4 +31,5 @@ private:
     static Value *count(Value *a, Value *b, Eval *ev, Env *n);
     static Value *equals(Value *a, Value *b, Eval *ev, Env *n);
     static Value *less_or_eq(Value *a, Value *b, Eval *ev, Env *n);
+    static Value *println(Value *a, Value *b, Eval *ev, Env *n);
 };
