@@ -13,6 +13,7 @@ void Builtin::install(Env *e)
     installFunction(e, "(def! not (fn* (cond) (if cond false true)))");
     installFunction(e, "(def! < (fn* (a b) (not (<= b a))))");
     installFunction(e, "(def! > (fn* (a b) (not (<= a b))))");
+    installFunction(e, "(def! >= (fn* (a b) (<= b a)))");
 }
 
 void Builtin::installFunction(Env *e, std::string f)
