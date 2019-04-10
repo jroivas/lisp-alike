@@ -153,7 +153,13 @@ public:
         Value(Type::Function), bind(a), body(b) {}
     Value *params() { return bind; }
     Value *value() { return body; }
-    std::string toString() const { return "#function"; }
+    std::string toString() const {
+        std::string res;
+        res += "#function: (fn* ";
+        res += bind->toString() + " ";
+        res += body->toString() + ")";
+        return res;
+    }
     Value *clone() const { return new FunctionValue(bind, body); }
 
 protected:

@@ -24,9 +24,9 @@ Value *Env::handleSymbol(Value *v)
     return v;
 }
 
-Env *Env::bind(Value *bind, Value *params)
+Env::Env(Env *outer, Value *bind, Value *params)
+    : next(outer)
 {
-    Env *fnEnv = new Env();
     Value *v = bind;
     Value *n = params;
     std::string restName;
@@ -44,14 +44,16 @@ Env *Env::bind(Value *bind, Value *params)
         } else if (s == "&") {
             rest = true;
         } else {
-            fnEnv->set(s, n);
+            set(s, n);
         }
         //if (n == nullptr) ERROR("Not enough parameters");
         if (n != nullptr && !rest) n = n->cdr();
         v = v->cdr();
     }
+    if (!rest)
+        return;
 
-    if (rest && restName.empty())
+    if (restName.empty())
         ERROR("Expected one item after &");
 
     while (n != nullptr) {
@@ -61,7 +63,5 @@ Env *Env::bind(Value *bind, Value *params)
             restValue->addLast(n->clone());
         n = n->cdr();
     }
-    fnEnv->set(restName, new ListValue(restValue));
-
-    return fnEnv;
+    set(restName, new ListValue(restValue));
 }

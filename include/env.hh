@@ -10,11 +10,12 @@ public:
     Env() : next(nullptr) {}
     Env(Env *outer) : next(outer) {}
 
-    static Env *bind(Value *bind, Value *params);
+    Env(Env *outer, Value *bind, Value *params);
 
     void set(std::string key, Value *v);
     Value *get(std::string key);
     Value *handleSymbol(Value *v);
+    std::unordered_map<std::string, Value *> getItems() { return values; }
 
 private:
     Env *next;

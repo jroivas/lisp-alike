@@ -46,6 +46,20 @@ Value *Eval::evalValue(Value *v)
 Value *Eval::evalSymbol(SymbolValue *symbol)
 {
     std::string val = symbol->value();
+    if (val == "!!debugenv") {
+        auto items = env.getItems();
+        for (auto it : items) {
+            std::cout << "item " << it.first << " (";
+            Value *v = it.second;
+            if (v == nullptr) std::cout << ") == nil";
+            else {
+                std::cout << typeStr(v->type()) << ") == ";
+                std::cout << v->toString();
+            }
+            std::cout << "\n";
+        }
+        return nullptr;
+    }
     auto symbolData = symbols.getSymbol(val);
     if (symbolData == nullptr) {
         Value *v = env.get(val);
@@ -114,7 +128,7 @@ Value *evalAllList(Eval *e, Value *l)
 
 Value *Eval::evalFunction(FunctionValue *function, Value *n)
 {
-    Env *fnEnv = Env::bind(
+    Env *fnEnv = new Env(&env,
             iterInit(function->params()),
             evalAllList(this, n));
     Value *body = function->value()->clone();

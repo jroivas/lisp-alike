@@ -264,6 +264,9 @@ Value *Builtin::equals(Value *a, Value *b, Eval *ev, Env *n)
 
 Value *Builtin::less_or_eq(Value *a, Value *b, Eval *ev, Env *n)
 {
+    a = ev->evalValue(a);
+    b = ev->evalValue(b);
+
     if (a == nullptr || b == nullptr)
         ERROR("Requires two params");
 

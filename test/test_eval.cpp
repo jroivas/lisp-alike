@@ -411,7 +411,7 @@ TEST_CASE("Env binding", "[env]") {
     p1->addLast(p3);
 
     Env *f;
-    REQUIRE_NOTHROW(f = Env::bind(b, p1));
+    REQUIRE_NOTHROW(f = new Env(nullptr, b, p1));
     REQUIRE(f != nullptr);
     REQUIRE(f->get("a") == nullptr);
     REQUIRE(f->get("b") != nullptr);
@@ -444,7 +444,7 @@ TEST_CASE("Env binding list", "[env]") {
     p1->addLast(p4);
 
     Env *f;
-    REQUIRE_NOTHROW(f = Env::bind(a, p1));
+    REQUIRE_NOTHROW(f = new Env(nullptr, a, p1));
     REQUIRE(f != nullptr);
     REQUIRE(f->get("a") == nullptr);
     REQUIRE(f->get("b") != nullptr);
@@ -484,7 +484,7 @@ TEST_CASE("Env binding list too many binds", "[env]") {
     Value *p2 = new IntValue(8);
     p1->addLast(p2);
 
-    REQUIRE_THROWS(Env::bind(a, p1));
+    REQUIRE_THROWS(new Env(nullptr, a, p1));
 }
 
 TEST_CASE("Env binding list too little binds", "[env]") {
@@ -496,7 +496,7 @@ TEST_CASE("Env binding list too little binds", "[env]") {
     Value *p2 = new IntValue(8);
     p1->addLast(p2);
 
-    REQUIRE_THROWS(Env::bind(a, p1));
+    REQUIRE_THROWS(new Env(nullptr, a, p1));
 }
 
 TEST_CASE("Eval less equal than", "[eval]") {
@@ -561,7 +561,6 @@ TEST_CASE("Eval functions inside functions", "[eval]") {
     REQUIRE(toInt(v)->value() == -25);
 }
 
-#if 0
 TEST_CASE("Eval less than", "[eval]") {
     Value *v;
     CHECK_NOTHROW(v = evalLine("(< 1 2)"));
@@ -569,4 +568,3 @@ TEST_CASE("Eval less than", "[eval]") {
     REQUIRE(v->type() == Type::Bool);
     REQUIRE(toBool(v)->value() == true);
 }
-#endif
