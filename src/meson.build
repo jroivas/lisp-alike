@@ -1,6 +1,5 @@
 lisplib = library('lisp-alike',
     sources: [
-        'history.cpp',
         'symbols.cpp',
         'builtin.cpp',
         'tokenize.cpp',

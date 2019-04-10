@@ -3,7 +3,6 @@
 #include <sstream>
 #include <unistd.h>
 
-#include "history.hh"
 #include "tokenize.hh"
 #include "parse.hh"
 #include "symbols.hh"
@@ -14,32 +13,37 @@
 #ifdef HAVE_READLINE
 #include <readline/readline.h>
 #include <readline/history.h>
+#include <readline/tilde.h>
+static char *history_file = nullptr;
 #endif
 
-std::string getline(const char *prompt)
+bool getline(const char *prompt, std::string &line)
 {
 #ifdef HAVE_READLINE
-    return readline(prompt);
+    char *res = readline(prompt);
+    if (res == nullptr) return false;
+
+    add_history(res);
+    append_history(1, history_file);
+    line = res;
 #else
-    std::string line;
     std::cout << prompt;
     std::getline(std::cin, line);
-    return line;
+    if (std::cin.eof()) return false;
 #endif
+    return true;
 }
 
 int repl(bool terminal)
 {
-    History history;
     std::string line;
     Symbols s;
     Env env;
     Builtin b(s);
     b.install(&env);
     while (!std::cin.eof()) {
-        line = getline(terminal ? "lisp> " : "");
-        if (std::cin.eof()) break;
-        history.add(line);
+        if (!getline(terminal ? "lisp> " : "", line))
+            break;
 
         try {
             Value *ev = evalLine(s, env, line);
@@ -56,5 +60,9 @@ int repl(bool terminal)
 
 int main(int argc, char **argv)
 {
+#ifdef HAVE_READLINE
+    history_file = tilde_expand("~/.lisp-alike-history");
+    read_history(history_file);
+#endif
     return repl(isatty(fileno(stdin)));
 }
