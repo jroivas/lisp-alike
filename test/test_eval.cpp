@@ -126,6 +126,12 @@ TEST_CASE("Eval if nil false", "[eval]") {
     REQUIRE(toInt(v)->value() == 10);
 }
 
+TEST_CASE("Eval if without else", "[eval]") {
+    Value *v;
+    CHECK_NOTHROW(v = evalLine("(if nil 2)"));
+    REQUIRE(v == nullptr);
+}
+
 TEST_CASE("Eval do list", "[eval]") {
     Value *v;
     CHECK_NOTHROW(v = evalLine("(do (+ 2 5) (* 2 5) 4)"));
@@ -531,6 +537,28 @@ TEST_CASE("Eval less equal than double false", "[eval]") {
     REQUIRE(v != nullptr);
     REQUIRE(v->type() == Type::Bool);
     REQUIRE(toBool(v)->value() == false);
+}
+
+TEST_CASE("Eval functions inside functions", "[eval]") {
+    Symbols s;
+    Builtin b(s);
+    Env n;
+
+    Value *v;
+    CHECK_NOTHROW(v = evalLine(s, n, "(def! minus (fn* (a) (- 0 a)))"));
+    CHECK_NOTHROW(v = evalLine(s, n, "(minus 5)"));
+
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == -5);
+
+    CHECK_NOTHROW(v = evalLine(s, n,
+        "(def! mulminus (fn* (a) (* (minus a) a)))"));
+    CHECK_NOTHROW(v = evalLine(s, n, "(mulminus 5)"));
+
+    REQUIRE(v != nullptr);
+    REQUIRE(v->type() == Type::Int);
+    REQUIRE(toInt(v)->value() == -25);
 }
 
 #if 0
