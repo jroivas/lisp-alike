@@ -15,6 +15,11 @@ lisplib = library('lisp-alike',
     ]
 )
 
+deps = []
+if readline.found()
+  deps += readline
+endif
+
 lisp_alike = executable('lisp-alike',
     sources: [
         'main.cpp'
@@ -24,6 +29,7 @@ lisp_alike = executable('lisp-alike',
         main_inc
     ],
     link_with: [
-        lisplib
-    ]
+        lisplib,
+    ],
+    dependencies: deps
 )

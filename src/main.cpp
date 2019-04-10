@@ -11,6 +11,23 @@
 #include "eval.hh"
 #include "env.hh"
 
+#ifdef HAVE_READLINE
+#include <readline/readline.h>
+#include <readline/history.h>
+#endif
+
+std::string getline(const char *prompt)
+{
+#ifdef HAVE_READLINE
+    return readline(prompt);
+#else
+    std::string line;
+    std::cout << prompt;
+    std::getline(std::cin, line);
+    return line;
+#endif
+}
+
 int repl(bool terminal)
 {
     History history;
@@ -20,8 +37,7 @@ int repl(bool terminal)
     Builtin b(s);
     b.install(&env);
     while (!std::cin.eof()) {
-        if (terminal) std::cout << "lisp> ";
-        std::getline(std::cin, line);
+        line = getline(terminal ? "lisp> " : "");
         if (std::cin.eof()) break;
         history.add(line);
 

@@ -10,5 +10,11 @@ main_inc = include_directories('include')
 top_inc = include_directories('.')
 test_inc = include_directories('test')
 
+cpp_compiler = meson.get_compiler('cpp')
+readline = cpp_compiler.find_library('readline', required: false)
+if readline.found()
+  add_project_arguments('-DHAVE_READLINE', language: 'cpp')
+endif
+
 subdir('src')
 subdir('test')

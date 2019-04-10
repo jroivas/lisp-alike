@@ -7,7 +7,7 @@ binary=$1
 
 find "${MYDIR}/cases/"*.out | while read f; do
     b=$(basename "$f" .out)
-    if ! diff -u <("${binary}" < "${MYDIR}/cases/$b") "$f"; then
+    if ! diff -u "$f" <("${binary}" < "${MYDIR}/cases/$b"); then
         echo "^^ ERROR test case caused faulty output: $b"
     fi
 done
