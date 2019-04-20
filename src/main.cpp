@@ -17,20 +17,22 @@
 static char *history_file = nullptr;
 #endif
 
-bool getline(const char *prompt, std::string &line)
+bool getline(bool term, const char *prompt, std::string &line)
 {
 #ifdef HAVE_READLINE
-    char *res = readline(prompt);
-    if (res == nullptr) return false;
+    if (term) {
+        char *res = readline(prompt);
+        if (res == nullptr) return false;
 
-    add_history(res);
-    append_history(1, history_file);
-    line = res;
-#else
+        add_history(res);
+        append_history(1, history_file);
+        line = res;
+        return true;
+    }
+#endif
     std::cout << prompt;
     std::getline(std::cin, line);
     if (std::cin.eof()) return false;
-#endif
     return true;
 }
 
@@ -42,14 +44,14 @@ int repl(bool terminal)
     Builtin b(s);
     b.install(&env);
     while (!std::cin.eof()) {
-        if (!getline(terminal ? "lisp> " : "", line))
+        if (!getline(terminal, terminal ? "lisp> " : "", line))
             break;
 
         try {
             Value *ev = evalLine(s, env, line);
-            if (ev != nullptr)
+            if (ev != nullptr) {
                 std::cout << ev->toString() << "\n";
-            else std::cout << "nil\n";
+            } else std::cout << "nil\n";
         }
         catch (std::string s) {
             std::cerr << s << "\n";
